@@ -22,6 +22,7 @@ package converter
 import (
 	"fmt"
 
+	"k8s.io/apimachinery/pkg/api/resource"
 	v1 "kubevirt.io/api/core/v1"
 	"kubevirt.io/client-go/log"
 
@@ -105,6 +106,12 @@ func CreateDomainInterfaces(vmi *v1.VirtualMachineInstance, c *ConverterContext)
 		if iface.State == v1.InterfaceStateLinkDown {
 			domainIface.LinkState = &api.LinkState{State: "down"}
 		}
+		if iface.Bandwidth != nil {
+			domainIface.BandWidth = &api.BandWidth{
+				Inbound:  convertBandwidthParams(iface.Bandwidth.Inbound),
+				Outbound: convertBandwidthParams(iface.Bandwidth.Outbound),
+			}
+		}
 		domainInterfaces = append(domainInterfaces, domainIface)
 	}
 
@@ -157,4 +164,42 @@ func translateModel(useVirtioTransitional *bool, bus string, archString string) 
 		return InterpretTransitionalModelType(useVirtioTransitional, archString)
 	}
 	return bus
+}
+
+func quantityToLibvirtKB(q *resource.Quantity) uint {
+	if q == nil {
+		return 0
+	}
+
+	val := q.Value() / 1024
+	if val <= 0 {
+		return 0
+	}
+
+	maxUint := uint64(^uint(0))
+	if uint64(val) > maxUint {
+		return uint(maxUint)
+	}
+
+	return uint(val)
+}
+
+func convertBandwidthParams(k8sParams *v1.BandwidthParams) *api.BandwidthParams {
+	if k8sParams == nil {
+		return nil
+	}
+
+	libvirtParams := &api.BandwidthParams{}
+
+	if k8sParams.Average != nil {
+		libvirtParams.Average = quantityToLibvirtKB(k8sParams.Average)
+	}
+	if k8sParams.Peak != nil {
+		libvirtParams.Peak = quantityToLibvirtKB(k8sParams.Peak)
+	}
+	if k8sParams.Burst != nil {
+		libvirtParams.Burst = quantityToLibvirtKB(k8sParams.Burst)
+	}
+
+	return libvirtParams
 }

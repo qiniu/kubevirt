@@ -1859,6 +1859,58 @@ var _ = Describe("Converter", func() {
 			Expect(domain.Spec.Devices.Interfaces).To(HaveLen(1))
 			Expect(domain.Spec.Devices.Interfaces[0].LinkState.State).To(Equal("down"))
 		})
+		It("Should set domain interface bandwidth", func() {
+			v1.SetObjectDefaults_VirtualMachineInstance(vmi)
+			vmi.Spec.Domain.Devices.Interfaces = []v1.Interface{
+				*v1.DefaultBridgeNetworkInterface(),
+			}
+			vmi.Spec.Domain.Devices.Interfaces[0].Bandwidth = &v1.Bandwidth{
+				Inbound: &v1.BandwidthParams{
+					Average: pointer.P(resource.MustParse("1000Ki")),
+					Peak:    pointer.P(resource.MustParse("5000Ki")),
+					Burst:   pointer.P(resource.MustParse("1024Ki")),
+				},
+				Outbound: &v1.BandwidthParams{
+					Average: pointer.P(resource.MustParse("128Ki")),
+				},
+			}
+			vmi.Spec.Networks = []v1.Network{*v1.DefaultPodNetwork()}
+
+			domain := vmiToDomain(vmi, c)
+			Expect(domain).ToNot(BeNil())
+			Expect(domain.Spec.Devices.Interfaces).To(HaveLen(1))
+			Expect(domain.Spec.Devices.Interfaces[0].BandWidth).To(Equal(&api.BandWidth{
+				Inbound: &api.BandwidthParams{
+					Average: 1000,
+					Peak:    5000,
+					Burst:   1024,
+				},
+				Outbound: &api.BandwidthParams{
+					Average: 128,
+				},
+			}))
+		})
+		It("Should clamp invalid interface bandwidth", func() {
+			v1.SetObjectDefaults_VirtualMachineInstance(vmi)
+			vmi.Spec.Domain.Devices.Interfaces = []v1.Interface{
+				*v1.DefaultBridgeNetworkInterface(),
+			}
+			vmi.Spec.Domain.Devices.Interfaces[0].Bandwidth = &v1.Bandwidth{
+				Inbound: &v1.BandwidthParams{
+					Average: pointer.P(resource.MustParse("-1000Ki")),
+				},
+			}
+			vmi.Spec.Networks = []v1.Network{*v1.DefaultPodNetwork()}
+
+			domain := vmiToDomain(vmi, c)
+			Expect(domain).ToNot(BeNil())
+			Expect(domain.Spec.Devices.Interfaces).To(HaveLen(1))
+			Expect(domain.Spec.Devices.Interfaces[0].BandWidth).To(Equal(&api.BandWidth{
+				Inbound: &api.BandwidthParams{
+					Average: 0,
+				},
+			}))
+		})
 		It("Should set domain interface source correctly for multus", func() {
 			v1.SetObjectDefaults_VirtualMachineInstance(vmi)
 			vmi.Spec.Domain.Devices.Interfaces = []v1.Interface{

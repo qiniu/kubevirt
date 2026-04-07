@@ -357,6 +357,22 @@ var _ = Describe("interface link state update", func() {
 			newDomain(newDeviceInterface(defaultNet, libvirtInterfaceLinkStateDown)),
 			expectUpdateDeviceLinkStateDown,
 		),
+		Entry("none to bandwidth",
+			dummyDomain(defaultNet),
+			newDomain(newDeviceInterfaceWithBandwidth(defaultNet, &api.BandWidth{
+				Inbound: &api.BandwidthParams{Average: 128},
+			})),
+			expectUpdateDeviceBandwidth,
+		),
+		Entry("bandwidth to same bandwidth",
+			newDomain(newDeviceInterfaceWithBandwidth(defaultNet, &api.BandWidth{
+				Inbound: &api.BandwidthParams{Average: 128},
+			})),
+			newDomain(newDeviceInterfaceWithBandwidth(defaultNet, &api.BandWidth{
+				Inbound: &api.BandwidthParams{Average: 128},
+			})),
+			expectUpdateDeviceNotCalled,
+		),
 	)
 })
 
@@ -407,6 +423,14 @@ func expectUpdateDeviceLinkStateNone(mockController *gomock.Controller) *testing
 	return mockClient
 }
 
+func expectUpdateDeviceBandwidth(mockController *gomock.Controller) *testing.Libvirt {
+	mockClient := testing.NewLibvirt(mockController)
+
+	const interfaceWithBandwidthXML = `<interface type=""><source></source><bandwidth><inbound average="128"></inbound></bandwidth><alias name="ua-default"></alias></interface>`
+	mockClient.DomainEXPECT().UpdateDeviceFlags(interfaceWithBandwidthXML, gomock.Any()).Times(1).Return(nil)
+	return mockClient
+}
+
 func vmiWithSingleBridgeInterfaceWithPodInterfaceReady(ifaceName string, nadName string) *v1.VirtualMachineInstance {
 	return &v1.VirtualMachineInstance{
 		Spec: v1.VirtualMachineInstanceSpec{
@@ -437,6 +461,14 @@ func generateNetwork(name string, nadName string) v1.Network {
 		NetworkSource: v1.NetworkSource{
 			Multus: &v1.MultusNetwork{NetworkName: nadName}},
 	}
+}
+
+func newDeviceInterfaceWithBandwidth(networkName string, bandwidth *api.BandWidth) api.Interface {
+	iface := api.Interface{
+		Alias: api.NewUserDefinedAlias(networkName),
+	}
+	iface.BandWidth = bandwidth
+	return iface
 }
 
 func dummyDomain(ifaceNames ...string) *api.Domain {
