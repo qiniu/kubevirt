@@ -25,6 +25,8 @@ import (
 	"fmt"
 	"strings"
 
+	"k8s.io/apimachinery/pkg/api/equality"
+
 	"libvirt.org/go/libvirt"
 
 	v1 "kubevirt.io/api/core/v1"
@@ -48,10 +50,20 @@ type virtIOInterfaceManager struct {
 	configurator vmConfigurator
 }
 
-const (
-	libvirtInterfaceLinkStateDown         = "down"
-	affectDeviceLiveAndConfigLibvirtFlags = libvirt.DOMAIN_DEVICE_MODIFY_LIVE | libvirt.DOMAIN_DEVICE_MODIFY_CONFIG
-)
+const libvirtInterfaceLinkStateDown = "down"
+
+var affectDeviceLiveAndConfigLibvirtFlags = func() libvirt.DomainDeviceModifyFlags {
+	var flags libvirt.DomainDeviceModifyFlags
+	flags |= libvirt.DOMAIN_DEVICE_MODIFY_LIVE
+	flags |= libvirt.DOMAIN_DEVICE_MODIFY_CONFIG
+	return flags
+}()
+
+var inactiveDomainXMLFlags = func() libvirt.DomainXMLFlags {
+	var flags libvirt.DomainXMLFlags
+	flags |= libvirt.DOMAIN_XML_INACTIVE
+	return flags
+}()
 
 func newVirtIOInterfaceManager(
 	libvirtClient domainClient,
@@ -102,8 +114,18 @@ func (vim *virtIOInterfaceManager) updateDomainLinkState(currentDomain, desiredD
 			continue
 		}
 
+		changed := false
 		if !isLinkStateEqual(curIface, desiredIface) {
 			curIface.LinkState = desiredIface.LinkState
+			changed = true
+		}
+
+		if !equality.Semantic.DeepEqual(curIface.BandWidth, desiredIface.BandWidth) {
+			curIface.BandWidth = desiredIface.BandWidth
+			changed = true
+		}
+
+		if changed {
 			if err := vim.updateIfaceInDomain(&curIface); err != nil {
 				return err
 			}
@@ -113,14 +135,13 @@ func (vim *virtIOInterfaceManager) updateDomainLinkState(currentDomain, desiredD
 }
 
 func (vim *virtIOInterfaceManager) updateIfaceInDomain(domIfaceToUpdate *api.Interface) error {
-	log.Log.Infof("preparing to update link state to interface %q", domIfaceToUpdate.Alias.GetName())
 	ifaceXML, err := xml.Marshal(domIfaceToUpdate)
 	if err != nil {
 		return err
 	}
 
 	if err = vim.dom.UpdateDeviceFlags(strings.ToLower(string(ifaceXML)), affectDeviceLiveAndConfigLibvirtFlags); err != nil {
-		log.Log.Reason(err).Errorf("libvirt failed to set link state to interface %s , %v", domIfaceToUpdate.Alias.GetName(), err)
+		log.Log.Reason(err).Errorf("libvirt failed to update interface %s: %v", domIfaceToUpdate.Alias.GetName(), err)
 		return err
 	}
 	return nil
@@ -194,6 +215,9 @@ func networksToHotplugWhoseInterfacesAreNotInTheDomain(
 		func(ifaceStatus v1.VirtualMachineInstanceNetworkInterface) bool {
 			_, exists := indexedDomainIfaces[ifaceStatus.Name]
 			vmiSpecIface := netvmispec.LookupInterfaceByName(vmi.Spec.Domain.Devices.Interfaces, ifaceStatus.Name)
+			if vmiSpecIface == nil {
+				return false
+			}
 
 			return netvmispec.ContainsInfoSource(
 				ifaceStatus.InfoSource, netvmispec.InfoSourceMultusStatus,
@@ -242,7 +266,7 @@ func WithNetworkIfacesResources(
 			}
 		}()
 
-		domainSpecWithoutIfacePlaceholders, domErr := util.GetDomainSpecWithFlags(dom, libvirt.DOMAIN_XML_INACTIVE)
+		domainSpecWithoutIfacePlaceholders, domErr := util.GetDomainSpecWithFlags(dom, inactiveDomainXMLFlags)
 		if domErr != nil {
 			return nil, domErr
 		}

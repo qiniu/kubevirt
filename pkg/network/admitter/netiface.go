@@ -35,6 +35,9 @@ import (
 	v1 "kubevirt.io/api/core/v1"
 )
 
+// maxBurstKiB is the hard upper limit enforced by libvirt for bandwidth burst parameter (unit: KiB).
+const maxBurstKiB = 4194303
+
 func validateNetworksAssignedToInterfaces(field *k8sfield.Path, spec *v1.VirtualMachineInstanceSpec) []metav1.StatusCause {
 	var causes []metav1.StatusCause
 	const nameOfTypeNotFoundMessagePattern = "%s '%s' not found."
@@ -113,7 +116,68 @@ func validateInterfacesFields(field *k8sfield.Path, spec *v1.VirtualMachineInsta
 		causes = append(causes, validatePciAddress(field, idx, iface)...)
 		causes = append(causes, validatePortConfiguration(field, idx, iface, networksByName[iface.Name])...)
 		causes = append(causes, validateDHCPOptions(field, idx, iface)...)
+		causes = append(causes, validateBandwidth(field, idx, iface)...)
 	}
+	return causes
+}
+
+func validateBandwidth(field *k8sfield.Path, idx int, iface v1.Interface) []metav1.StatusCause {
+	var causes []metav1.StatusCause
+
+	if iface.Bandwidth == nil {
+		return causes
+	}
+
+	if iface.Bandwidth.Inbound == nil && iface.Bandwidth.Outbound == nil {
+		causes = append(causes, metav1.StatusCause{
+			Type:    metav1.CauseTypeFieldValueInvalid,
+			Message: "bandwidth must define at least one of inbound or outbound",
+			Field:   field.Child("domain", "devices", "interfaces").Index(idx).Child("bandwidth").String(),
+		})
+		return causes
+	}
+
+	validateParams := func(params *v1.BandwidthParams, direction string) {
+		if params == nil {
+			return
+		}
+
+		requireQuantity := func(q *uint32, paramName string) {
+			if q == nil {
+				causes = append(causes, metav1.StatusCause{
+					Type:    metav1.CauseTypeFieldValueInvalid,
+					Message: fmt.Sprintf("bandwidth %s %s must be set when bandwidth %s is configured", direction, paramName, direction),
+					Field:   field.Child("domain", "devices", "interfaces").Index(idx).Child("bandwidth", direction, paramName).String(),
+				})
+				return
+			}
+
+			if *q == 0 {
+				causes = append(causes, metav1.StatusCause{
+					Type:    metav1.CauseTypeFieldValueInvalid,
+					Message: fmt.Sprintf("bandwidth %s %s must be greater than 0 KiB", direction, paramName),
+					Field:   field.Child("domain", "devices", "interfaces").Index(idx).Child("bandwidth", direction, paramName).String(),
+				})
+				return
+			}
+		}
+
+		requireQuantity(params.Average, "average")
+		requireQuantity(params.Peak, "peak")
+		requireQuantity(params.Burst, "burst")
+
+		if params.Burst != nil && *params.Burst > maxBurstKiB {
+			causes = append(causes, metav1.StatusCause{
+				Type:    metav1.CauseTypeFieldValueInvalid,
+				Message: fmt.Sprintf("bandwidth %s burst value %d exceeds maximum allowed value %d", direction, *params.Burst, maxBurstKiB),
+				Field:   field.Child("domain", "devices", "interfaces").Index(idx).Child("bandwidth", direction, "burst").String(),
+			})
+		}
+	}
+
+	validateParams(iface.Bandwidth.Inbound, "inbound")
+	validateParams(iface.Bandwidth.Outbound, "outbound")
+
 	return causes
 }
 

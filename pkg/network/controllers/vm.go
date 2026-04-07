@@ -139,6 +139,7 @@ func (v *VMController) vmiInterfacesPatch(newVmiSpec *v1.VirtualMachineInstanceS
 		equality.Semantic.DeepEqual(vmi.Spec.Networks, newVmiSpec.Networks) {
 		return nil
 	}
+
 	patchBytes, err := patch.New(
 		patch.WithTest("/spec/networks", vmi.Spec.Networks),
 		patch.WithAdd("/spec/networks", newVmiSpec.Networks),
@@ -166,42 +167,89 @@ func applyDynamicIfaceRequestOnVMI(
 	for _, vmIface := range vm.Spec.Template.Spec.Domain.Devices.Interfaces {
 		vmiIfaceCopy, existsInVMISpec := vmiIndexedInterfaces[vmIface.Name]
 
-		shouldHotplugIface := !existsInVMISpec &&
-			vmIface.State != v1.InterfaceStateAbsent &&
-			(vmIface.InterfaceBindingMethod.Bridge != nil || vmIface.InterfaceBindingMethod.SRIOV != nil)
-
-		shouldUpdateExistingIfaceState := existsInVMISpec &&
-			vmIface.State != vmiIfaceCopy.State &&
-			vmiIfaceCopy.State != v1.InterfaceStateAbsent
-
-		switch {
-		case shouldHotplugIface:
+		if shouldHotplugDynamicInterface(vmIface, existsInVMISpec) {
 			vmiSpecCopy.Networks = append(vmiSpecCopy.Networks, vmIndexedNetworks[vmIface.Name])
 			vmiSpecCopy.Domain.Devices.Interfaces = append(vmiSpecCopy.Domain.Devices.Interfaces, vmIface)
-
-		case shouldUpdateExistingIfaceState:
-			if !(hasOrdinalIfaces && vmIface.State == v1.InterfaceStateAbsent) {
-				vmiIface := vmispec.LookupInterfaceByName(vmiSpecCopy.Domain.Devices.Interfaces, vmIface.Name)
-				vmiIface.State = vmIface.State
-			}
+			continue
 		}
+
+		shouldUpdateState, shouldUpdateBandwidth := shouldUpdateExistingDynamicInterface(
+			vmIface, vmiIfaceCopy, existsInVMISpec, hasOrdinalIfaces,
+		)
+		if !shouldUpdateState && !shouldUpdateBandwidth {
+			continue
+		}
+
+		updateExistingVMIInterface(vmiSpecCopy, vmIface, shouldUpdateState, shouldUpdateBandwidth)
 	}
 	return vmiSpecCopy
 }
 
-func syncNetworks(vmNets, vmiNets []v1.Network) []v1.Network {
-	vmIndexedNets := vmispec.IndexNetworkSpecByName(vmNets)
-	updatedVMINets := make([]v1.Network, len(vmiNets))
-	for i := range vmiNets {
-		updatedVMINets[i] = *vmiNets[i].DeepCopy()
+func shouldHotplugDynamicInterface(vmIface v1.Interface, existsInVMISpec bool) bool {
+	return !existsInVMISpec &&
+		vmIface.State != v1.InterfaceStateAbsent &&
+		(vmIface.InterfaceBindingMethod.Bridge != nil || vmIface.InterfaceBindingMethod.SRIOV != nil)
+}
+
+func shouldUpdateExistingDynamicInterface(
+	vmIface, vmiIface v1.Interface,
+	existsInVMISpec, hasOrdinalIfaces bool,
+) (shouldUpdateState bool, shouldUpdateBandwidth bool) {
+	if !existsInVMISpec {
+		return false, false
 	}
 
-	for i, vmiNet := range updatedVMINets {
-		vmNet, exists := vmIndexedNets[vmiNet.Name]
+	if hasOrdinalIfaces && vmIface.State == v1.InterfaceStateAbsent {
+		return false, false
+	}
 
-		if exists && vmNet.Multus != nil && vmiNet.Multus != nil {
-			updatedVMINets[i].Multus.NetworkName = vmNet.Multus.NetworkName
+	if vmiIface.State == v1.InterfaceStateAbsent {
+		return false, false
+	}
+
+	shouldUpdateState = vmIface.State != vmiIface.State
+	shouldUpdateBandwidth = !equality.Semantic.DeepEqual(vmIface.Bandwidth, vmiIface.Bandwidth)
+	return shouldUpdateState, shouldUpdateBandwidth
+}
+
+func updateExistingVMIInterface(
+	vmiSpecCopy *v1.VirtualMachineInstanceSpec,
+	vmIface v1.Interface,
+	shouldUpdateState, shouldUpdateBandwidth bool,
+) {
+	vmiIface := vmispec.LookupInterfaceByName(vmiSpecCopy.Domain.Devices.Interfaces, vmIface.Name)
+	if vmiIface == nil {
+		return
+	}
+
+	if shouldUpdateState {
+		vmiIface.State = vmIface.State
+	}
+	if shouldUpdateBandwidth {
+		vmiIface.Bandwidth = vmIface.Bandwidth.DeepCopy()
+	}
+}
+
+func syncNetworks(vmNets, vmiNets []v1.Network) []v1.Network {
+	vmIndexedNets := vmispec.IndexNetworkSpecByName(vmNets)
+	updatedVMINets := make([]v1.Network, 0, len(vmiNets))
+	for _, vmiNet := range vmiNets {
+		vmNet, exists := vmIndexedNets[vmiNet.Name]
+		if !exists {
+			// Keep VMI-only networks until the detach flow fully converges and status catches up.
+			updatedVMINets = append(updatedVMINets, vmiNet)
+			continue
 		}
+
+		if vmNet.Multus != nil && vmiNet.Multus != nil && vmNet.Multus.NetworkName != vmiNet.Multus.NetworkName {
+			updatedVMINet := vmiNet
+			updatedVMINet.Multus = vmiNet.Multus.DeepCopy()
+			updatedVMINet.Multus.NetworkName = vmNet.Multus.NetworkName
+			updatedVMINets = append(updatedVMINets, updatedVMINet)
+			continue
+		}
+
+		updatedVMINets = append(updatedVMINets, vmiNet)
 	}
 	return updatedVMINets
 }

@@ -2,6 +2,12 @@
 
 set -e
 
+# build-ginkgo.sh compiles ginkgo to _out/tests/ginkgo as a file.
+# This script needs _out/tests/ginkgo as a directory.
+# Remove the file first so mkdir doesn't fail on the name collision.
+rm -f _out/tests/ginkgo
+mkdir _out/tests/ginkgo -p
+
 source $(dirname "$0")/common.sh
 
 FOLDERS="${KUBEVIRT_DIR}/cmd/ ${KUBEVIRT_DIR}/pkg/ ${KUBEVIRT_DIR}/staging/src/kubevirt.io/ ${KUBEVIRT_DIR}/tests/framework/"

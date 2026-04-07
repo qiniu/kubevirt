@@ -25,7 +25,7 @@ docker_images="
     tests/conformance
 "
 
-docker_tag=${DOCKER_TAG:-latest}
+docker_tag=${DOCKER_TAG:-7niu-v1.8.2}
 docker_tag_alt=${DOCKER_TAG_ALT}
 image_prefix=${IMAGE_PREFIX}
 image_prefix_alt=${IMAGE_PREFIX_ALT}

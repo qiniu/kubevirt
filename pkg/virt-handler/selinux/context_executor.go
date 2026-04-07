@@ -112,7 +112,9 @@ func (ce *ContextExecutor) isSELinuxEnabled() bool {
 func (ce *ContextExecutor) getLabelForPID(pid int) (string, error) {
 	fileLabel, err := ce.executor.FileLabel(fmt.Sprintf("/proc/%d/attr/current", pid))
 	if err != nil {
-		return "", fmt.Errorf("could not retrieve pid %d selinux label: %v", pid, err)
+		// If SELinux is not supported or not enabled, return empty label without error
+		log.Log.Warningf("could not retrieve pid %d selinux label: %v, continuing without SELinux context", pid, err)
+		return "", nil
 	}
 	return fileLabel, nil
 }

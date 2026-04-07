@@ -34,9 +34,14 @@ import (
 
 const (
 	MaxConcurrentHotPlugDevicesEvents = 32
-
-	affectLiveAndConfigLibvirtFlags = libvirt.DOMAIN_DEVICE_MODIFY_LIVE | libvirt.DOMAIN_DEVICE_MODIFY_CONFIG
 )
+
+var affectLiveAndConfigLibvirtFlags = func() libvirt.DomainDeviceModifyFlags {
+	var flags libvirt.DomainDeviceModifyFlags
+	flags |= libvirt.DOMAIN_DEVICE_MODIFY_LIVE
+	flags |= libvirt.DOMAIN_DEVICE_MODIFY_CONFIG
+	return flags
+}()
 
 type DeviceDetacher interface {
 	DetachDeviceFlags(xml string, flags libvirt.DomainDeviceModifyFlags) error

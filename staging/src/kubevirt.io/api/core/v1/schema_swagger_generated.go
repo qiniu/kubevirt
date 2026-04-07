@@ -754,6 +754,22 @@ func (Interface) SwaggerDoc() map[string]string {
 		"tag":         "If specified, the virtual network interface address and its tag will be provided to the guest via config drive\n+optional",
 		"acpiIndex":   "If specified, the ACPI index is used to provide network interface device naming, that is stable across changes\nin PCI addresses assigned to the device.\nThis value is required to be unique across all devices and be between 1 and (16*1024-1).\n+optional",
 		"state":       "State represents the requested operational state of the interface.\nThe supported values are:\n`absent`, expressing a request to remove the interface.\n`down`, expressing a request to set the link down.\n`up`, expressing a request to set the link up.\nEmpty value functions as `up`.\n+optional",
+		"bandwidth":   "Bandwidth allows setting QoS limits for the interface.\nWhen inbound or outbound is configured, average, peak, and burst must all be specified.\n+optional",
+	}
+}
+
+func (Bandwidth) SwaggerDoc() map[string]string {
+	return map[string]string{
+		"inbound":  "Inbound QoS settings. When specified, average, peak, and burst must all be provided.\n+optional",
+		"outbound": "Outbound QoS settings. When specified, average, peak, and burst must all be provided.\n+optional",
+	}
+}
+
+func (BandwidthParams) SwaggerDoc() map[string]string {
+	return map[string]string{
+		"average": "Average rate in KiB/s.\nSpecify the value as a positive integer (unit: KiB/s).\n+kubebuilder:validation:Minimum=1\n+optional",
+		"peak":    "Peak rate in KiB/s.\nSpecify the value as a positive integer (unit: KiB/s).\n+kubebuilder:validation:Minimum=1\n+optional",
+		"burst":   "Burst size in KiB.\nSpecify the value as a positive integer (unit: KiB).\n+kubebuilder:validation:Minimum=1\n+optional",
 	}
 }
 
