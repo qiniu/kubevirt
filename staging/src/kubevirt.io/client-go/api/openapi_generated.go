@@ -18879,12 +18879,14 @@ func schema_kubevirtio_api_core_v1_Bandwidth(ref common.ReferenceCallback) commo
 				Properties: map[string]spec.Schema{
 					"inbound": {
 						SchemaProps: spec.SchemaProps{
-							Ref: ref("kubevirt.io/api/core/v1.BandwidthParams"),
+							Description: "Inbound QoS settings. When specified, average, peak, and burst must all be provided.",
+							Ref:         ref("kubevirt.io/api/core/v1.BandwidthParams"),
 						},
 					},
 					"outbound": {
 						SchemaProps: spec.SchemaProps{
-							Ref: ref("kubevirt.io/api/core/v1.BandwidthParams"),
+							Description: "Outbound QoS settings. When specified, average, peak, and burst must all be provided.",
+							Ref:         ref("kubevirt.io/api/core/v1.BandwidthParams"),
 						},
 					},
 				},
@@ -22283,7 +22285,7 @@ func schema_kubevirtio_api_core_v1_Interface(ref common.ReferenceCallback) commo
 					},
 					"bandwidth": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Bandwidth allows setting QoS limits for the interface",
+							Description: "Bandwidth allows setting QoS limits for the interface. When inbound or outbound is configured, average, peak, and burst must all be specified.",
 							Ref:         ref("kubevirt.io/api/core/v1.Bandwidth"),
 						},
 					},

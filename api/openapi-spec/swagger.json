@@ -13868,9 +13868,11 @@
     "type": "object",
     "properties": {
      "inbound": {
+      "description": "Inbound QoS settings. When specified, average, peak, and burst must all be provided.",
       "$ref": "#/definitions/v1.BandwidthParams"
      },
      "outbound": {
+      "description": "Outbound QoS settings. When specified, average, peak, and burst must all be provided.",
       "$ref": "#/definitions/v1.BandwidthParams"
      }
     }
@@ -15590,7 +15592,7 @@
       "format": "int32"
      },
      "bandwidth": {
-      "description": "Bandwidth allows setting QoS limits for the interface",
+      "description": "Bandwidth allows setting QoS limits for the interface. When inbound or outbound is configured, average, peak, and burst must all be specified.",
       "$ref": "#/definitions/v1.Bandwidth"
      },
      "binding": {
