@@ -199,17 +199,21 @@ func applyDynamicIfaceRequestOnVMI(
 
 func syncNetworks(vmNets, vmiNets []v1.Network) []v1.Network {
 	vmIndexedNets := vmispec.IndexNetworkSpecByName(vmNets)
-	updatedVMINets := make([]v1.Network, len(vmiNets))
-	for i := range vmiNets {
-		updatedVMINets[i] = *vmiNets[i].DeepCopy()
-	}
-
-	for i, vmiNet := range updatedVMINets {
+	updatedVMINets := make([]v1.Network, 0, len(vmiNets))
+	for _, vmiNet := range vmiNets {
+		updatedVMINet := *vmiNet.DeepCopy()
 		vmNet, exists := vmIndexedNets[vmiNet.Name]
-
-		if exists && vmNet.Multus != nil && vmiNet.Multus != nil {
-			updatedVMINets[i].Multus.NetworkName = vmNet.Multus.NetworkName
+		if !exists {
+			// Keep VMI-only networks until the detach flow fully converges and status catches up.
+			updatedVMINets = append(updatedVMINets, updatedVMINet)
+			continue
 		}
+
+		if vmNet.Multus != nil && updatedVMINet.Multus != nil {
+			updatedVMINet.Multus.NetworkName = vmNet.Multus.NetworkName
+		}
+
+		updatedVMINets = append(updatedVMINets, updatedVMINet)
 	}
 	return updatedVMINets
 }

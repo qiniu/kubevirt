@@ -779,6 +779,68 @@ var _ = Describe("VM Network Controller", func() {
 		Expect(updatedVMI.Spec.Domain.Devices.Interfaces).To(Equal(expectedIfaces))
 		Expect(updatedVMI.Spec.Networks).To(Equal(expectedNets))
 	})
+
+	It("sync preserves VMI-only networks while NAD live update is enabled", func() {
+		clientset := fake.NewSimpleClientset()
+		c := controllers.NewVMController(clientset, stubClusterConfigurer{isLiveUpdateNADRefEnabled: true})
+
+		multusAndDomainInfoSource := vmispec.NewInfoSource(vmispec.InfoSourceMultusStatus, vmispec.InfoSourceDomain)
+
+		vmi := libvmi.New(
+			libvmi.WithInterface(libvmi.InterfaceDeviceWithMasqueradeBinding()),
+			libvmi.WithInterface(libvmi.InterfaceDeviceWithBridgeBinding(secondaryNetName1)),
+			libvmi.WithInterface(libvmi.InterfaceDeviceWithBridgeBinding(secondaryNetName2)),
+			libvmi.WithNetwork(v1.DefaultPodNetwork()),
+			libvmi.WithNetwork(libvmi.MultusNetwork(secondaryNetName1, nadName)),
+			libvmi.WithNetwork(libvmi.MultusNetwork(secondaryNetName2, nadName2)),
+			libvmistatus.WithStatus(
+				libvmistatus.New(
+					libvmistatus.WithInterfaceStatus(v1.VirtualMachineInstanceNetworkInterface{
+						Name:             defaultNetName,
+						PodInterfaceName: namescheme.PrimaryPodInterfaceName,
+						InfoSource:       vmispec.InfoSourceDomain,
+					}),
+					libvmistatus.WithInterfaceStatus(v1.VirtualMachineInstanceNetworkInterface{
+						Name:             secondaryNetName1,
+						PodInterfaceName: namescheme.GenerateHashedInterfaceName(secondaryNetName1),
+						InfoSource:       multusAndDomainInfoSource,
+					}),
+					libvmistatus.WithInterfaceStatus(v1.VirtualMachineInstanceNetworkInterface{
+						Name:             secondaryNetName2,
+						PodInterfaceName: namescheme.GenerateHashedInterfaceName(secondaryNetName2),
+						InfoSource:       multusAndDomainInfoSource,
+					}),
+				),
+			),
+		)
+		vm := libvmi.NewVirtualMachine(vmi.DeepCopy())
+
+		vm.Spec.Template.Spec.Domain.Devices.Interfaces[1].State = v1.InterfaceStateAbsent
+		vm.Spec.Template.Spec.Networks = []v1.Network{
+			*vm.Spec.Template.Spec.Networks[0].DeepCopy(),
+			*vm.Spec.Template.Spec.Networks[2].DeepCopy(),
+		}
+		vm.Spec.Template.Spec.Networks[1].Multus.NetworkName = updatedNADName2
+
+		_, err := clientset.KubevirtV1().VirtualMachineInstances(vmi.Namespace).Create(context.Background(), vmi, k8smetav1.CreateOptions{})
+		Expect(err).NotTo(HaveOccurred())
+
+		updatedVM, err := c.Sync(vm, vmi)
+		Expect(err).NotTo(HaveOccurred())
+
+		updatedVMI, err := clientset.KubevirtV1().
+			VirtualMachineInstances(vmi.Namespace).
+			Get(context.Background(), vmi.Name, k8smetav1.GetOptions{})
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(updatedVM.Spec.Template.Spec.Networks).To(Equal(vm.Spec.Template.Spec.Networks))
+		Expect(updatedVMI.Spec.Networks).To(Equal([]v1.Network{
+			*v1.DefaultPodNetwork(),
+			*libvmi.MultusNetwork(secondaryNetName1, nadName),
+			*libvmi.MultusNetwork(secondaryNetName2, updatedNADName2),
+		}))
+		Expect(updatedVMI.Spec.Domain.Devices.Interfaces[1].State).To(Equal(v1.InterfaceStateAbsent))
+	})
 })
 
 type syncError interface {

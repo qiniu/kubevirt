@@ -204,13 +204,16 @@ func WithVirtioModel(virtioModel string) option {
 	}
 }
 
-func quantityToLibvirtKB(q *resource.Quantity) uint {
+func quantityToLibvirtKiB(q *resource.Quantity) uint {
 	if q == nil {
 		return 0
 	}
 
-	// Convert to kilobytes
-	val := q.Value() / 1024
+	// Bandwidth quantities are defined at the API boundary in KiB units.
+	val, isInt := q.AsInt64()
+	if !isInt {
+		return 0
+	}
 
 	// Guard against negative values (treat as 0 / ignore)
 	if val <= 0 {
@@ -235,13 +238,13 @@ func convertBandwidthParams(k8sParams *v1.BandwidthParams) *api.BandwidthParams 
 	libvirtParams := &api.BandwidthParams{}
 
 	if k8sParams.Average != nil {
-		libvirtParams.Average = quantityToLibvirtKB(k8sParams.Average)
+		libvirtParams.Average = quantityToLibvirtKiB(k8sParams.Average)
 	}
 	if k8sParams.Peak != nil {
-		libvirtParams.Peak = quantityToLibvirtKB(k8sParams.Peak)
+		libvirtParams.Peak = quantityToLibvirtKiB(k8sParams.Peak)
 	}
 	if k8sParams.Burst != nil {
-		libvirtParams.Burst = quantityToLibvirtKB(k8sParams.Burst)
+		libvirtParams.Burst = quantityToLibvirtKiB(k8sParams.Burst)
 	}
 
 	return libvirtParams

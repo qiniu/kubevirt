@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"net"
 	"regexp"
+	"strconv"
 
 	"kubevirt.io/kubevirt/pkg/network/link"
 	"kubevirt.io/kubevirt/pkg/network/vmispec"
@@ -135,17 +136,21 @@ func validateBandwidth(field *k8sfield.Path, idx int, iface v1.Interface) []meta
 			if q == nil {
 				return
 			}
-			val := q.Value()
-			if val < 0 {
+
+			val, isInt := q.AsInt64()
+			if !isInt || q.String() != strconv.FormatInt(val, 10) {
 				causes = append(causes, metav1.StatusCause{
 					Type:    metav1.CauseTypeFieldValueInvalid,
-					Message: fmt.Sprintf("bandwidth %s %s must be greater than or equal to 0", direction, paramName),
+					Message: fmt.Sprintf("bandwidth %s %s must be specified as a positive integer in KiB without a unit suffix", direction, paramName),
 					Field:   field.Child("domain", "devices", "interfaces").Index(idx).Child("bandwidth", direction, paramName).String(),
 				})
-			} else if val > 0 && val < 1024 {
+				return
+			}
+
+			if val <= 0 {
 				causes = append(causes, metav1.StatusCause{
 					Type:    metav1.CauseTypeFieldValueInvalid,
-					Message: fmt.Sprintf("bandwidth %s %s must be at least 1 KiB (1024 bytes) if specified", direction, paramName),
+					Message: fmt.Sprintf("bandwidth %s %s must be greater than 0 KiB", direction, paramName),
 					Field:   field.Child("domain", "devices", "interfaces").Index(idx).Child("bandwidth", direction, paramName).String(),
 				})
 			}

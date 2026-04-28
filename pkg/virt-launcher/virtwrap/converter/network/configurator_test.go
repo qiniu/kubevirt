@@ -212,12 +212,12 @@ var _ = Describe("Network Domain Configurator", func() {
 			"when inbound and outbound bandwidth limits are provided",
 			&v1.Bandwidth{
 				Inbound: &v1.BandwidthParams{
-					Average: pointer.P(resource.MustParse("1000Ki")), // 1000 * 1024 bytes
-					Peak:    pointer.P(resource.MustParse("5000Ki")),
-					Burst:   pointer.P(resource.MustParse("1024Ki")),
+					Average: pointer.P(resource.MustParse("1000")),
+					Peak:    pointer.P(resource.MustParse("5000")),
+					Burst:   pointer.P(resource.MustParse("1024")),
 				},
 				Outbound: &v1.BandwidthParams{
-					Average: pointer.P(resource.MustParse("128Ki")),
+					Average: pointer.P(resource.MustParse("128")),
 				},
 			},
 			&api.BandWidth{
@@ -235,7 +235,7 @@ var _ = Describe("Network Domain Configurator", func() {
 			"when negative or dangerously large bandwidth limits are provided (clamps to safe values)",
 			&v1.Bandwidth{
 				Inbound: &v1.BandwidthParams{
-					Average: pointer.P(resource.MustParse("-1000Ki")),
+					Average: pointer.P(resource.MustParse("-1000")),
 				},
 			},
 			&api.BandWidth{

@@ -6502,21 +6502,27 @@ var CRDsValidation map[string]string = map[string]string{
                                         anyOf:
                                         - type: integer
                                         - type: string
-                                        description: Average rate in bytes/sec
+                                        description: |-
+                                          Average rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                         pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                         x-kubernetes-int-or-string: true
                                       burst:
                                         anyOf:
                                         - type: integer
                                         - type: string
-                                        description: Burst size in bytes
+                                        description: |-
+                                          Burst size in KiB.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                         pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                         x-kubernetes-int-or-string: true
                                       peak:
                                         anyOf:
                                         - type: integer
                                         - type: string
-                                        description: Peak rate in bytes/sec
+                                        description: |-
+                                          Peak rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                         pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                         x-kubernetes-int-or-string: true
                                     type: object
@@ -6526,21 +6532,27 @@ var CRDsValidation map[string]string = map[string]string{
                                         anyOf:
                                         - type: integer
                                         - type: string
-                                        description: Average rate in bytes/sec
+                                        description: |-
+                                          Average rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                         pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                         x-kubernetes-int-or-string: true
                                       burst:
                                         anyOf:
                                         - type: integer
                                         - type: string
-                                        description: Burst size in bytes
+                                        description: |-
+                                          Burst size in KiB.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                         pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                         x-kubernetes-int-or-string: true
                                       peak:
                                         anyOf:
                                         - type: integer
                                         - type: string
-                                        description: Peak rate in bytes/sec
+                                        description: |-
+                                          Peak rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                         pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                         x-kubernetes-int-or-string: true
                                     type: object
@@ -12636,21 +12648,27 @@ var CRDsValidation map[string]string = map[string]string{
                                 anyOf:
                                 - type: integer
                                 - type: string
-                                description: Average rate in bytes/sec
+                                description: |-
+                                          Average rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                 x-kubernetes-int-or-string: true
                               burst:
                                 anyOf:
                                 - type: integer
                                 - type: string
-                                description: Burst size in bytes
+                                description: |-
+                                          Burst size in KiB.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                 x-kubernetes-int-or-string: true
                               peak:
                                 anyOf:
                                 - type: integer
                                 - type: string
-                                description: Peak rate in bytes/sec
+                                description: |-
+                                          Peak rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                 x-kubernetes-int-or-string: true
                             type: object
@@ -12660,21 +12678,27 @@ var CRDsValidation map[string]string = map[string]string{
                                 anyOf:
                                 - type: integer
                                 - type: string
-                                description: Average rate in bytes/sec
+                                description: |-
+                                          Average rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                 x-kubernetes-int-or-string: true
                               burst:
                                 anyOf:
                                 - type: integer
                                 - type: string
-                                description: Burst size in bytes
+                                description: |-
+                                          Burst size in KiB.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                 x-kubernetes-int-or-string: true
                               peak:
                                 anyOf:
                                 - type: integer
                                 - type: string
-                                description: Peak rate in bytes/sec
+                                description: |-
+                                          Peak rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                 x-kubernetes-int-or-string: true
                             type: object
@@ -16557,21 +16581,27 @@ var CRDsValidation map[string]string = map[string]string{
                                 anyOf:
                                 - type: integer
                                 - type: string
-                                description: Average rate in bytes/sec
+                                description: |-
+                                          Average rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                 x-kubernetes-int-or-string: true
                               burst:
                                 anyOf:
                                 - type: integer
                                 - type: string
-                                description: Burst size in bytes
+                                description: |-
+                                          Burst size in KiB.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                 x-kubernetes-int-or-string: true
                               peak:
                                 anyOf:
                                 - type: integer
                                 - type: string
-                                description: Peak rate in bytes/sec
+                                description: |-
+                                          Peak rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                 x-kubernetes-int-or-string: true
                             type: object
@@ -16581,21 +16611,27 @@ var CRDsValidation map[string]string = map[string]string{
                                 anyOf:
                                 - type: integer
                                 - type: string
-                                description: Average rate in bytes/sec
+                                description: |-
+                                          Average rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                 x-kubernetes-int-or-string: true
                               burst:
                                 anyOf:
                                 - type: integer
                                 - type: string
-                                description: Burst size in bytes
+                                description: |-
+                                          Burst size in KiB.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                 x-kubernetes-int-or-string: true
                               peak:
                                 anyOf:
                                 - type: integer
                                 - type: string
-                                description: Peak rate in bytes/sec
+                                description: |-
+                                          Peak rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                 x-kubernetes-int-or-string: true
                             type: object
@@ -19166,21 +19202,27 @@ var CRDsValidation map[string]string = map[string]string{
                                         anyOf:
                                         - type: integer
                                         - type: string
-                                        description: Average rate in bytes/sec
+                                        description: |-
+                                          Average rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                         pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                         x-kubernetes-int-or-string: true
                                       burst:
                                         anyOf:
                                         - type: integer
                                         - type: string
-                                        description: Burst size in bytes
+                                        description: |-
+                                          Burst size in KiB.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                         pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                         x-kubernetes-int-or-string: true
                                       peak:
                                         anyOf:
                                         - type: integer
                                         - type: string
-                                        description: Peak rate in bytes/sec
+                                        description: |-
+                                          Peak rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                         pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                         x-kubernetes-int-or-string: true
                                     type: object
@@ -19190,21 +19232,27 @@ var CRDsValidation map[string]string = map[string]string{
                                         anyOf:
                                         - type: integer
                                         - type: string
-                                        description: Average rate in bytes/sec
+                                        description: |-
+                                          Average rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                         pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                         x-kubernetes-int-or-string: true
                                       burst:
                                         anyOf:
                                         - type: integer
                                         - type: string
-                                        description: Burst size in bytes
+                                        description: |-
+                                          Burst size in KiB.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                         pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                         x-kubernetes-int-or-string: true
                                       peak:
                                         anyOf:
                                         - type: integer
                                         - type: string
-                                        description: Peak rate in bytes/sec
+                                        description: |-
+                                          Peak rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                         pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                         x-kubernetes-int-or-string: true
                                     type: object
@@ -24326,21 +24374,27 @@ var CRDsValidation map[string]string = map[string]string{
                                                 anyOf:
                                                 - type: integer
                                                 - type: string
-                                                description: Average rate in bytes/sec
+                                                description: |-
+                                          Average rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                                 x-kubernetes-int-or-string: true
                                               burst:
                                                 anyOf:
                                                 - type: integer
                                                 - type: string
-                                                description: Burst size in bytes
+                                                description: |-
+                                          Burst size in KiB.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                                 x-kubernetes-int-or-string: true
                                               peak:
                                                 anyOf:
                                                 - type: integer
                                                 - type: string
-                                                description: Peak rate in bytes/sec
+                                                description: |-
+                                          Peak rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                                 x-kubernetes-int-or-string: true
                                             type: object
@@ -24350,21 +24404,27 @@ var CRDsValidation map[string]string = map[string]string{
                                                 anyOf:
                                                 - type: integer
                                                 - type: string
-                                                description: Average rate in bytes/sec
+                                                description: |-
+                                          Average rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                                 x-kubernetes-int-or-string: true
                                               burst:
                                                 anyOf:
                                                 - type: integer
                                                 - type: string
-                                                description: Burst size in bytes
+                                                description: |-
+                                          Burst size in KiB.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                                 x-kubernetes-int-or-string: true
                                               peak:
                                                 anyOf:
                                                 - type: integer
                                                 - type: string
-                                                description: Peak rate in bytes/sec
+                                                description: |-
+                                          Peak rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                                 x-kubernetes-int-or-string: true
                                             type: object
@@ -29957,21 +30017,27 @@ var CRDsValidation map[string]string = map[string]string{
                                                     anyOf:
                                                     - type: integer
                                                     - type: string
-                                                    description: Average rate in bytes/sec
+                                                    description: |-
+                                          Average rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                                     pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                                     x-kubernetes-int-or-string: true
                                                   burst:
                                                     anyOf:
                                                     - type: integer
                                                     - type: string
-                                                    description: Burst size in bytes
+                                                    description: |-
+                                          Burst size in KiB.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                                     pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                                     x-kubernetes-int-or-string: true
                                                   peak:
                                                     anyOf:
                                                     - type: integer
                                                     - type: string
-                                                    description: Peak rate in bytes/sec
+                                                    description: |-
+                                          Peak rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                                     pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                                     x-kubernetes-int-or-string: true
                                                 type: object
@@ -29981,21 +30047,27 @@ var CRDsValidation map[string]string = map[string]string{
                                                     anyOf:
                                                     - type: integer
                                                     - type: string
-                                                    description: Average rate in bytes/sec
+                                                    description: |-
+                                          Average rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                                     pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                                     x-kubernetes-int-or-string: true
                                                   burst:
                                                     anyOf:
                                                     - type: integer
                                                     - type: string
-                                                    description: Burst size in bytes
+                                                    description: |-
+                                          Burst size in KiB.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                                     pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                                     x-kubernetes-int-or-string: true
                                                   peak:
                                                     anyOf:
                                                     - type: integer
                                                     - type: string
-                                                    description: Peak rate in bytes/sec
+                                                    description: |-
+                                          Peak rate in KiB/s.
+                                          Specify the value as a positive integer in KiB without a unit suffix.
                                                     pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                                     x-kubernetes-int-or-string: true
                                                 type: object

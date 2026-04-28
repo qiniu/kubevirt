@@ -767,9 +767,9 @@ func (Bandwidth) SwaggerDoc() map[string]string {
 
 func (BandwidthParams) SwaggerDoc() map[string]string {
 	return map[string]string{
-		"average": "Average rate in bytes/sec\n+optional",
-		"peak":    "Peak rate in bytes/sec\n+optional",
-		"burst":   "Burst size in bytes\n+optional",
+		"average": "Average rate in KiB/s.\nSpecify the value as a positive integer in KiB without a unit suffix.\n+optional",
+		"peak":    "Peak rate in KiB/s.\nSpecify the value as a positive integer in KiB without a unit suffix.\n+optional",
+		"burst":   "Burst size in KiB.\nSpecify the value as a positive integer in KiB without a unit suffix.\n+optional",
 	}
 }
 

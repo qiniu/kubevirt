@@ -32,6 +32,7 @@ import (
 	v1 "kubevirt.io/api/core/v1"
 
 	"kubevirt.io/kubevirt/pkg/network/admitter"
+	"kubevirt.io/kubevirt/pkg/pointer"
 )
 
 var _ = Describe("Validating VMI network spec", func() {
@@ -403,8 +404,9 @@ var _ = Describe("Validating VMI network spec", func() {
 				},
 				Bandwidth: &v1.Bandwidth{
 					Inbound: &v1.BandwidthParams{
-						Average: resource.NewQuantity(100, resource.DecimalSI),
+						Average: pointer.P(resource.MustParse("1Ki")),
 						Peak:    resource.NewQuantity(-1, resource.DecimalSI),
+						Burst:   pointer.P(resource.MustParse("1500m")),
 					},
 				},
 			},
@@ -425,14 +427,56 @@ var _ = Describe("Validating VMI network spec", func() {
 			},
 			metav1.StatusCause{
 				Type:    "FieldValueInvalid",
-				Message: "bandwidth inbound average must be at least 1 KiB (1024 bytes) if specified",
+				Message: "bandwidth inbound average must be specified as a positive integer in KiB without a unit suffix",
 				Field:   "fake.domain.devices.interfaces[0].bandwidth.inbound.average",
 			},
 			metav1.StatusCause{
 				Type:    "FieldValueInvalid",
-				Message: "bandwidth inbound peak must be greater than or equal to 0",
+				Message: "bandwidth inbound peak must be greater than 0 KiB",
 				Field:   "fake.domain.devices.interfaces[0].bandwidth.inbound.peak",
 			},
+			metav1.StatusCause{
+				Type:    "FieldValueInvalid",
+				Message: "bandwidth inbound burst must be specified as a positive integer in KiB without a unit suffix",
+				Field:   "fake.domain.devices.interfaces[0].bandwidth.inbound.burst",
+			},
 		))
+	})
+
+	It("should accept bandwidth values specified as positive integers in KiB", func() {
+		spec := &v1.VirtualMachineInstanceSpec{}
+		spec.Domain.Devices.Interfaces = []v1.Interface{*v1.DefaultMasqueradeNetworkInterface()}
+		spec.Domain.Devices.Interfaces[0].Bandwidth = &v1.Bandwidth{
+			Inbound: &v1.BandwidthParams{
+				Average: pointer.P(resource.MustParse("1")),
+				Peak:    pointer.P(resource.MustParse("128")),
+				Burst:   pointer.P(resource.MustParse("256")),
+			},
+			Outbound: &v1.BandwidthParams{
+				Average: pointer.P(resource.MustParse("512")),
+			},
+		}
+		spec.Networks = []v1.Network{*v1.DefaultPodNetwork()}
+
+		validator := admitter.NewValidator(k8sfield.NewPath("fake"), spec, stubClusterConfigChecker{})
+		Expect(validator.Validate()).To(BeEmpty())
+	})
+
+	It("should reject zero bandwidth values", func() {
+		spec := &v1.VirtualMachineInstanceSpec{}
+		spec.Domain.Devices.Interfaces = []v1.Interface{*v1.DefaultMasqueradeNetworkInterface()}
+		spec.Domain.Devices.Interfaces[0].Bandwidth = &v1.Bandwidth{
+			Inbound: &v1.BandwidthParams{
+				Average: pointer.P(resource.MustParse("0")),
+			},
+		}
+		spec.Networks = []v1.Network{*v1.DefaultPodNetwork()}
+
+		validator := admitter.NewValidator(k8sfield.NewPath("fake"), spec, stubClusterConfigChecker{})
+		Expect(validator.Validate()).To(ConsistOf(metav1.StatusCause{
+			Type:    "FieldValueInvalid",
+			Message: "bandwidth inbound average must be greater than 0 KiB",
+			Field:   "fake.domain.devices.interfaces[0].bandwidth.inbound.average",
+		}))
 	})
 })
