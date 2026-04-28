@@ -242,10 +242,10 @@ func getInterfaceType(iface *v1.Interface) string {
 	return v1.VirtIO
 }
 
-func indexNetworksByName(networks []v1.Network) map[string]*v1.Network {
-	netsByName := map[string]*v1.Network{}
+func indexNetworksByName(networks []v1.Network) map[string]struct{} {
+	netsByName := map[string]struct{}{}
 	for _, network := range networks {
-		netsByName[network.Name] = network.DeepCopy()
+		netsByName[network.Name] = struct{}{}
 	}
 	return netsByName
 }

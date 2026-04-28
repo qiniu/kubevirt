@@ -50,10 +50,20 @@ type virtIOInterfaceManager struct {
 	configurator vmConfigurator
 }
 
-const (
-	libvirtInterfaceLinkStateDown         = "down"
-	affectDeviceLiveAndConfigLibvirtFlags = libvirt.DOMAIN_DEVICE_MODIFY_LIVE | libvirt.DOMAIN_DEVICE_MODIFY_CONFIG
-)
+const libvirtInterfaceLinkStateDown = "down"
+
+var affectDeviceLiveAndConfigLibvirtFlags = func() libvirt.DomainDeviceModifyFlags {
+	var flags libvirt.DomainDeviceModifyFlags
+	flags |= libvirt.DOMAIN_DEVICE_MODIFY_LIVE
+	flags |= libvirt.DOMAIN_DEVICE_MODIFY_CONFIG
+	return flags
+}()
+
+var inactiveDomainXMLFlags = func() libvirt.DomainXMLFlags {
+	var flags libvirt.DomainXMLFlags
+	flags |= libvirt.DOMAIN_XML_INACTIVE
+	return flags
+}()
 
 func newVirtIOInterfaceManager(
 	libvirtClient domainClient,
@@ -131,7 +141,7 @@ func (vim *virtIOInterfaceManager) updateIfaceInDomain(domIfaceToUpdate *api.Int
 	}
 
 	if err = vim.dom.UpdateDeviceFlags(strings.ToLower(string(ifaceXML)), affectDeviceLiveAndConfigLibvirtFlags); err != nil {
-		log.Log.Reason(err).Errorf("libvirt failed to set link state to interface %s , %v", domIfaceToUpdate.Alias.GetName(), err)
+		log.Log.Reason(err).Errorf("libvirt failed to update interface %s: %v", domIfaceToUpdate.Alias.GetName(), err)
 		return err
 	}
 	return nil
@@ -205,6 +215,9 @@ func networksToHotplugWhoseInterfacesAreNotInTheDomain(
 		func(ifaceStatus v1.VirtualMachineInstanceNetworkInterface) bool {
 			_, exists := indexedDomainIfaces[ifaceStatus.Name]
 			vmiSpecIface := netvmispec.LookupInterfaceByName(vmi.Spec.Domain.Devices.Interfaces, ifaceStatus.Name)
+			if vmiSpecIface == nil {
+				return false
+			}
 
 			return netvmispec.ContainsInfoSource(
 				ifaceStatus.InfoSource, netvmispec.InfoSourceMultusStatus,
@@ -253,7 +266,7 @@ func WithNetworkIfacesResources(
 			}
 		}()
 
-		domainSpecWithoutIfacePlaceholders, domErr := util.GetDomainSpecWithFlags(dom, libvirt.DOMAIN_XML_INACTIVE)
+		domainSpecWithoutIfacePlaceholders, domErr := util.GetDomainSpecWithFlags(dom, inactiveDomainXMLFlags)
 		if domErr != nil {
 			return nil, domErr
 		}
