@@ -404,12 +404,28 @@ var _ = Describe("Validating VMI network spec", func() {
 			},
 			Outbound: &v1.BandwidthParams{
 				Average: pointer.P(uint32(512)),
+				Peak:    pointer.P(uint32(1024)),
+				Burst:   pointer.P(uint32(2048)),
 			},
 		}
 		spec.Networks = []v1.Network{*v1.DefaultPodNetwork()}
 
 		validator := admitter.NewValidator(k8sfield.NewPath("fake"), spec, stubClusterConfigChecker{})
 		Expect(validator.Validate()).To(BeEmpty())
+	})
+
+	It("should reject an empty bandwidth object", func() {
+		spec := &v1.VirtualMachineInstanceSpec{}
+		spec.Domain.Devices.Interfaces = []v1.Interface{*v1.DefaultMasqueradeNetworkInterface()}
+		spec.Domain.Devices.Interfaces[0].Bandwidth = &v1.Bandwidth{}
+		spec.Networks = []v1.Network{*v1.DefaultPodNetwork()}
+
+		validator := admitter.NewValidator(k8sfield.NewPath("fake"), spec, stubClusterConfigChecker{})
+		Expect(validator.Validate()).To(ConsistOf(metav1.StatusCause{
+			Type:    "FieldValueInvalid",
+			Message: "bandwidth must define at least one of inbound or outbound",
+			Field:   "fake.domain.devices.interfaces[0].bandwidth",
+		}))
 	})
 
 	It("should reject zero bandwidth values", func() {
@@ -430,7 +446,7 @@ var _ = Describe("Validating VMI network spec", func() {
 		}))
 	})
 
-	DescribeTable("should reject bandwidth peak or burst without average", func(direction, paramName string, params *v1.BandwidthParams) {
+	DescribeTable("should reject incomplete bandwidth configuration", func(direction string, params *v1.BandwidthParams, expectedCauses []metav1.StatusCause) {
 		spec := &v1.VirtualMachineInstanceSpec{}
 		spec.Domain.Devices.Interfaces = []v1.Interface{*v1.DefaultMasqueradeNetworkInterface()}
 		spec.Domain.Devices.Interfaces[0].Bandwidth = &v1.Bandwidth{}
@@ -442,15 +458,43 @@ var _ = Describe("Validating VMI network spec", func() {
 		spec.Networks = []v1.Network{*v1.DefaultPodNetwork()}
 
 		validator := admitter.NewValidator(k8sfield.NewPath("fake"), spec, stubClusterConfigChecker{})
-		Expect(validator.Validate()).To(ConsistOf(metav1.StatusCause{
-			Type:    "FieldValueInvalid",
-			Message: fmt.Sprintf("bandwidth %s %s requires average to be set", direction, paramName),
-			Field:   fmt.Sprintf("fake.domain.devices.interfaces[0].bandwidth.%s.%s", direction, paramName),
-		}))
+		Expect(validator.Validate()).To(ConsistOf(expectedCauses))
 	},
-		Entry("for inbound peak", "inbound", "peak", &v1.BandwidthParams{Peak: pointer.P(uint32(128))}),
-		Entry("for inbound burst", "inbound", "burst", &v1.BandwidthParams{Burst: pointer.P(uint32(256))}),
-		Entry("for outbound peak", "outbound", "peak", &v1.BandwidthParams{Peak: pointer.P(uint32(128))}),
-		Entry("for outbound burst", "outbound", "burst", &v1.BandwidthParams{Burst: pointer.P(uint32(256))}),
+		Entry("when inbound only sets average", "inbound", &v1.BandwidthParams{Average: pointer.P(uint32(64))}, []metav1.StatusCause{
+			{
+				Type:    "FieldValueInvalid",
+				Message: "bandwidth inbound peak must be set when bandwidth inbound is configured",
+				Field:   "fake.domain.devices.interfaces[0].bandwidth.inbound.peak",
+			},
+			{
+				Type:    "FieldValueInvalid",
+				Message: "bandwidth inbound burst must be set when bandwidth inbound is configured",
+				Field:   "fake.domain.devices.interfaces[0].bandwidth.inbound.burst",
+			},
+		}),
+		Entry("when inbound misses average", "inbound", &v1.BandwidthParams{
+			Peak:  pointer.P(uint32(128)),
+			Burst: pointer.P(uint32(256)),
+		}, []metav1.StatusCause{{
+			Type:    "FieldValueInvalid",
+			Message: "bandwidth inbound average must be set when bandwidth inbound is configured",
+			Field:   "fake.domain.devices.interfaces[0].bandwidth.inbound.average",
+		}}),
+		Entry("when outbound misses peak", "outbound", &v1.BandwidthParams{
+			Average: pointer.P(uint32(128)),
+			Burst:   pointer.P(uint32(256)),
+		}, []metav1.StatusCause{{
+			Type:    "FieldValueInvalid",
+			Message: "bandwidth outbound peak must be set when bandwidth outbound is configured",
+			Field:   "fake.domain.devices.interfaces[0].bandwidth.outbound.peak",
+		}}),
+		Entry("when outbound misses burst", "outbound", &v1.BandwidthParams{
+			Average: pointer.P(uint32(128)),
+			Peak:    pointer.P(uint32(256)),
+		}, []metav1.StatusCause{{
+			Type:    "FieldValueInvalid",
+			Message: "bandwidth outbound burst must be set when bandwidth outbound is configured",
+			Field:   "fake.domain.devices.interfaces[0].bandwidth.outbound.burst",
+		}}),
 	)
 })

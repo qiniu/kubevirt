@@ -121,7 +121,9 @@ func (d DomainConfigurator) configureInterface(iface *v1.Interface, vmi *v1.Virt
 			Inbound:  convertBandwidthParams(iface.Bandwidth.Inbound),
 			Outbound: convertBandwidthParams(iface.Bandwidth.Outbound),
 		}
-		builderOptions = append(builderOptions, withBandwidth(libvirtBandwidth))
+		if libvirtBandwidth.Inbound != nil || libvirtBandwidth.Outbound != nil {
+			builderOptions = append(builderOptions, withBandwidth(libvirtBandwidth))
+		}
 	}
 
 	switch {

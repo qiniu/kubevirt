@@ -125,25 +125,27 @@ func validateBandwidth(field *k8sfield.Path, idx int, iface v1.Interface) []meta
 		return causes
 	}
 
+	if iface.Bandwidth.Inbound == nil && iface.Bandwidth.Outbound == nil {
+		causes = append(causes, metav1.StatusCause{
+			Type:    metav1.CauseTypeFieldValueInvalid,
+			Message: "bandwidth must define at least one of inbound or outbound",
+			Field:   field.Child("domain", "devices", "interfaces").Index(idx).Child("bandwidth").String(),
+		})
+		return causes
+	}
+
 	validateParams := func(params *v1.BandwidthParams, direction string) {
 		if params == nil {
 			return
 		}
 
-		requireAverage := func(q *uint32, paramName string) {
-			if q == nil || params.Average != nil {
-				return
-			}
-
-			causes = append(causes, metav1.StatusCause{
-				Type:    metav1.CauseTypeFieldValueInvalid,
-				Message: fmt.Sprintf("bandwidth %s %s requires average to be set", direction, paramName),
-				Field:   field.Child("domain", "devices", "interfaces").Index(idx).Child("bandwidth", direction, paramName).String(),
-			})
-		}
-
-		checkQuantity := func(q *uint32, paramName string) {
+		requireQuantity := func(q *uint32, paramName string) {
 			if q == nil {
+				causes = append(causes, metav1.StatusCause{
+					Type:    metav1.CauseTypeFieldValueInvalid,
+					Message: fmt.Sprintf("bandwidth %s %s must be set when bandwidth %s is configured", direction, paramName, direction),
+					Field:   field.Child("domain", "devices", "interfaces").Index(idx).Child("bandwidth", direction, paramName).String(),
+				})
 				return
 			}
 
@@ -153,14 +155,13 @@ func validateBandwidth(field *k8sfield.Path, idx int, iface v1.Interface) []meta
 					Message: fmt.Sprintf("bandwidth %s %s must be greater than 0 KiB", direction, paramName),
 					Field:   field.Child("domain", "devices", "interfaces").Index(idx).Child("bandwidth", direction, paramName).String(),
 				})
+				return
 			}
 		}
 
-		requireAverage(params.Peak, "peak")
-		requireAverage(params.Burst, "burst")
-		checkQuantity(params.Average, "average")
-		checkQuantity(params.Peak, "peak")
-		checkQuantity(params.Burst, "burst")
+		requireQuantity(params.Average, "average")
+		requireQuantity(params.Peak, "peak")
+		requireQuantity(params.Burst, "burst")
 	}
 
 	validateParams(iface.Bandwidth.Inbound, "inbound")

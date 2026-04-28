@@ -1486,14 +1486,17 @@ type Interface struct {
 	// Empty value functions as `up`.
 	// +optional
 	State InterfaceState `json:"state,omitempty"`
-	// Bandwidth allows setting QoS limits for the interface
+	// Bandwidth allows setting QoS limits for the interface.
+	// When inbound or outbound is configured, average, peak, and burst must all be specified.
 	// +optional
 	Bandwidth *Bandwidth `json:"bandwidth,omitempty"`
 }
 
 type Bandwidth struct {
+	// Inbound QoS settings. When specified, average, peak, and burst must all be provided.
 	// +optional
 	Inbound *BandwidthParams `json:"inbound,omitempty"`
+	// Outbound QoS settings. When specified, average, peak, and burst must all be provided.
 	// +optional
 	Outbound *BandwidthParams `json:"outbound,omitempty"`
 }

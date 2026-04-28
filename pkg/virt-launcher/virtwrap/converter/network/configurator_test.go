@@ -217,6 +217,8 @@ var _ = Describe("Network Domain Configurator", func() {
 				},
 				Outbound: &v1.BandwidthParams{
 					Average: pointer.P(uint32(128)),
+					Peak:    pointer.P(uint32(256)),
+					Burst:   pointer.P(uint32(512)),
 				},
 			},
 			&api.BandWidth{
@@ -227,22 +229,15 @@ var _ = Describe("Network Domain Configurator", func() {
 				},
 				Outbound: &api.BandwidthParams{
 					Average: 128,
+					Peak:    256,
+					Burst:   512,
 				},
 			},
 		),
 		Entry(
-			"when zero bandwidth limits are provided",
-			&v1.Bandwidth{
-				Inbound: &v1.BandwidthParams{
-					Average: pointer.P(uint32(0)),
-				},
-			},
-			&api.BandWidth{
-				Inbound: &api.BandwidthParams{
-					Average: 0,
-				},
-				Outbound: nil,
-			},
+			"when an empty bandwidth object is provided",
+			&v1.Bandwidth{},
+			nil,
 		),
 	)
 
