@@ -39,6 +39,7 @@ import (
 	"kubevirt.io/kubevirt/pkg/network/controllers"
 	"kubevirt.io/kubevirt/pkg/network/namescheme"
 	"kubevirt.io/kubevirt/pkg/network/vmispec"
+	"kubevirt.io/kubevirt/pkg/pointer"
 )
 
 var _ = Describe("VM Network Controller", func() {
@@ -502,6 +503,55 @@ var _ = Describe("VM Network Controller", func() {
 		Entry("absent to down", v1.InterfaceStateLinkDown),
 		Entry("absent to empty", v1.InterfaceState("")),
 	)
+
+	It("sync updates bandwidth without changing interface state", func() {
+		clientset := fake.NewSimpleClientset()
+		c := controllers.NewVMController(clientset, stubClusterConfigurer{})
+
+		originalBandwidth := &v1.Bandwidth{
+			Inbound: &v1.BandwidthParams{
+				Average: pointer.P(uint32(1)),
+			},
+		}
+		updatedBandwidth := &v1.Bandwidth{
+			Inbound: &v1.BandwidthParams{
+				Average: pointer.P(uint32(2)),
+				Peak:    pointer.P(uint32(4)),
+			},
+		}
+		expectedIface := v1.Interface{
+			Name:                   defaultNetName,
+			State:                  v1.InterfaceStateLinkDown,
+			InterfaceBindingMethod: v1.InterfaceBindingMethod{Bridge: &v1.InterfaceBridge{}},
+			Bandwidth:              updatedBandwidth.DeepCopy(),
+		}
+
+		vmi := libvmi.New(
+			libvmi.WithInterface(v1.Interface{
+				Name:                   defaultNetName,
+				State:                  v1.InterfaceStateLinkDown,
+				InterfaceBindingMethod: v1.InterfaceBindingMethod{Bridge: &v1.InterfaceBridge{}},
+				Bandwidth:              originalBandwidth.DeepCopy(),
+			}),
+			libvmi.WithNetwork(v1.DefaultPodNetwork()),
+		)
+		vm := libvmi.NewVirtualMachine(vmi.DeepCopy())
+		vm.Spec.Template.Spec.Domain.Devices.Interfaces[0].Bandwidth = updatedBandwidth.DeepCopy()
+
+		_, err := clientset.KubevirtV1().VirtualMachineInstances(vmi.Namespace).Create(context.Background(), vmi, k8smetav1.CreateOptions{})
+		Expect(err).NotTo(HaveOccurred())
+
+		updatedVM, err := c.Sync(vm, vmi)
+		Expect(err).NotTo(HaveOccurred())
+
+		updatedVMI, err := clientset.KubevirtV1().
+			VirtualMachineInstances(vmi.Namespace).
+			Get(context.Background(), vmi.Name, k8smetav1.GetOptions{})
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(updatedVMI.Spec.Domain.Devices.Interfaces).To(Equal([]v1.Interface{expectedIface}))
+		Expect(updatedVMI.Spec.Networks).To(Equal(updatedVM.Spec.Template.Spec.Networks))
+	})
 
 	It("sync does not hotunplug interfaces when legacy ordinal interface names are found", func() {
 		clientset := fake.NewSimpleClientset()

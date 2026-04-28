@@ -22,7 +22,6 @@ package network_test
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"k8s.io/apimachinery/pkg/api/resource"
 
 	v1 "kubevirt.io/api/core/v1"
 
@@ -212,12 +211,12 @@ var _ = Describe("Network Domain Configurator", func() {
 			"when inbound and outbound bandwidth limits are provided",
 			&v1.Bandwidth{
 				Inbound: &v1.BandwidthParams{
-					Average: pointer.P(resource.MustParse("1000")),
-					Peak:    pointer.P(resource.MustParse("5000")),
-					Burst:   pointer.P(resource.MustParse("1024")),
+					Average: pointer.P(uint32(1000)),
+					Peak:    pointer.P(uint32(5000)),
+					Burst:   pointer.P(uint32(1024)),
 				},
 				Outbound: &v1.BandwidthParams{
-					Average: pointer.P(resource.MustParse("128")),
+					Average: pointer.P(uint32(128)),
 				},
 			},
 			&api.BandWidth{
@@ -232,10 +231,10 @@ var _ = Describe("Network Domain Configurator", func() {
 			},
 		),
 		Entry(
-			"when negative or dangerously large bandwidth limits are provided (clamps to safe values)",
+			"when zero bandwidth limits are provided",
 			&v1.Bandwidth{
 				Inbound: &v1.BandwidthParams{
-					Average: pointer.P(resource.MustParse("-1000")),
+					Average: pointer.P(uint32(0)),
 				},
 			},
 			&api.BandWidth{

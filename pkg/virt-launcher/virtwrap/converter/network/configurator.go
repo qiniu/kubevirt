@@ -22,7 +22,6 @@ package network
 import (
 	"fmt"
 
-	"k8s.io/apimachinery/pkg/api/resource"
 	v1 "kubevirt.io/api/core/v1"
 
 	netvmispec "kubevirt.io/kubevirt/pkg/network/vmispec"
@@ -204,30 +203,23 @@ func WithVirtioModel(virtioModel string) option {
 	}
 }
 
-func quantityToLibvirtKiB(q *resource.Quantity) uint {
-	if q == nil {
+func bandwidthValueToLibvirtKiB(value *uint32) uint {
+	if value == nil {
 		return 0
 	}
 
-	// Bandwidth quantities are defined at the API boundary in KiB units.
-	val, isInt := q.AsInt64()
-	if !isInt {
-		return 0
-	}
-
-	// Guard against negative values (treat as 0 / ignore)
-	if val <= 0 {
+	if *value == 0 {
 		return 0
 	}
 
 	// Clamp overly large values to avoid architecture-dependent uint overflows.
 	// ^uint(0) dynamically gets the maximum possible value for a uint on the current machine.
 	maxUint := uint64(^uint(0))
-	if uint64(val) > maxUint {
+	if uint64(*value) > maxUint {
 		return uint(maxUint)
 	}
 
-	return uint(val)
+	return uint(*value)
 }
 
 func convertBandwidthParams(k8sParams *v1.BandwidthParams) *api.BandwidthParams {
@@ -238,13 +230,13 @@ func convertBandwidthParams(k8sParams *v1.BandwidthParams) *api.BandwidthParams 
 	libvirtParams := &api.BandwidthParams{}
 
 	if k8sParams.Average != nil {
-		libvirtParams.Average = quantityToLibvirtKiB(k8sParams.Average)
+		libvirtParams.Average = bandwidthValueToLibvirtKiB(k8sParams.Average)
 	}
 	if k8sParams.Peak != nil {
-		libvirtParams.Peak = quantityToLibvirtKiB(k8sParams.Peak)
+		libvirtParams.Peak = bandwidthValueToLibvirtKiB(k8sParams.Peak)
 	}
 	if k8sParams.Burst != nil {
-		libvirtParams.Burst = quantityToLibvirtKiB(k8sParams.Burst)
+		libvirtParams.Burst = bandwidthValueToLibvirtKiB(k8sParams.Burst)
 	}
 
 	return libvirtParams

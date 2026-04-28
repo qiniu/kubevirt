@@ -187,7 +187,9 @@ func applyDynamicIfaceRequestOnVMI(
 		case shouldUpdateExistingIfaceState || shouldUpdateExistingIfaceBandwidth:
 			if !(hasOrdinalIfaces && vmIface.State == v1.InterfaceStateAbsent) {
 				vmiIface := vmispec.LookupInterfaceByName(vmiSpecCopy.Domain.Devices.Interfaces, vmIface.Name)
-				vmiIface.State = vmIface.State
+				if shouldUpdateExistingIfaceState {
+					vmiIface.State = vmIface.State
+				}
 				if shouldUpdateExistingIfaceBandwidth {
 					vmiIface.Bandwidth = vmIface.Bandwidth.DeepCopy()
 				}

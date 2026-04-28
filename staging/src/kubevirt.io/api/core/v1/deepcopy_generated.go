@@ -245,18 +245,18 @@ func (in *BandwidthParams) DeepCopyInto(out *BandwidthParams) {
 	*out = *in
 	if in.Average != nil {
 		in, out := &in.Average, &out.Average
-		x := (*in).DeepCopy()
-		*out = &x
+		*out = new(uint32)
+		**out = **in
 	}
 	if in.Peak != nil {
 		in, out := &in.Peak, &out.Peak
-		x := (*in).DeepCopy()
-		*out = &x
+		*out = new(uint32)
+		**out = **in
 	}
 	if in.Burst != nil {
 		in, out := &in.Burst, &out.Burst
-		x := (*in).DeepCopy()
-		*out = &x
+		*out = new(uint32)
+		**out = **in
 	}
 	return
 }

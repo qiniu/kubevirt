@@ -1,7 +1,7 @@
 package components
 
 var CRDsValidation map[string]string = map[string]string{
-	"datavolumetemplatespec": `openAPIV3Schema:
+ "datavolumetemplatespec" : `openAPIV3Schema:
   nullable: true
   properties:
     apiVersion:
@@ -636,7 +636,7 @@ var CRDsValidation map[string]string = map[string]string{
   - spec
   type: object
 `,
-	"kubevirt": `openAPIV3Schema:
+ "kubevirt" : `openAPIV3Schema:
   description: KubeVirt represents the object deploying all KubeVirt resources
   properties:
     apiVersion:
@@ -4045,7 +4045,7 @@ var CRDsValidation map[string]string = map[string]string{
   - spec
   type: object
 `,
-	"migrationpolicy": `openAPIV3Schema:
+ "migrationpolicy" : `openAPIV3Schema:
   description: MigrationPolicy holds migration policy (i.e. configurations) to apply
     to a VM or group of VMs
   properties:
@@ -4104,7 +4104,7 @@ var CRDsValidation map[string]string = map[string]string{
   - spec
   type: object
 `,
-	"virtualmachine": `openAPIV3Schema:
+ "virtualmachine" : `openAPIV3Schema:
   description: |-
     VirtualMachine handles the VirtualMachines that are not running
     or are in a stopped state
@@ -6499,62 +6499,50 @@ var CRDsValidation map[string]string = map[string]string{
                                   inbound:
                                     properties:
                                       average:
-                                        anyOf:
-                                        - type: integer
-                                        - type: string
                                         description: |-
                                           Average rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                        x-kubernetes-int-or-string: true
+                                          Specify the value as a positive integer in KiB.
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
                                       burst:
-                                        anyOf:
-                                        - type: integer
-                                        - type: string
                                         description: |-
                                           Burst size in KiB.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                        x-kubernetes-int-or-string: true
+                                          Specify the value as a positive integer in KiB.
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
                                       peak:
-                                        anyOf:
-                                        - type: integer
-                                        - type: string
                                         description: |-
                                           Peak rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                        x-kubernetes-int-or-string: true
+                                          Specify the value as a positive integer in KiB.
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
                                     type: object
                                   outbound:
                                     properties:
                                       average:
-                                        anyOf:
-                                        - type: integer
-                                        - type: string
                                         description: |-
                                           Average rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                        x-kubernetes-int-or-string: true
+                                          Specify the value as a positive integer in KiB.
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
                                       burst:
-                                        anyOf:
-                                        - type: integer
-                                        - type: string
                                         description: |-
                                           Burst size in KiB.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                        x-kubernetes-int-or-string: true
+                                          Specify the value as a positive integer in KiB.
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
                                       peak:
-                                        anyOf:
-                                        - type: integer
-                                        - type: string
                                         description: |-
                                           Peak rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                        x-kubernetes-int-or-string: true
+                                          Specify the value as a positive integer in KiB.
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
                                     type: object
                                 type: object
                               binding:
@@ -9220,7 +9208,7 @@ var CRDsValidation map[string]string = map[string]string{
   - spec
   type: object
 `,
-	"virtualmachinebackup": `openAPIV3Schema:
+ "virtualmachinebackup" : `openAPIV3Schema:
   description: VirtualMachineBackup defines the operation of backing up a VM
   properties:
     apiVersion:
@@ -9398,7 +9386,7 @@ var CRDsValidation map[string]string = map[string]string{
   - spec
   type: object
 `,
-	"virtualmachinebackuptracker": `openAPIV3Schema:
+ "virtualmachinebackuptracker" : `openAPIV3Schema:
   description: |-
     VirtualMachineBackupTracker defines the way to track the latest checkpoint of
     a backup solution for a vm
@@ -9510,7 +9498,7 @@ var CRDsValidation map[string]string = map[string]string{
   - spec
   type: object
 `,
-	"virtualmachineclone": `openAPIV3Schema:
+ "virtualmachineclone" : `openAPIV3Schema:
   description: VirtualMachineClone is a CRD that clones one VM into another.
   properties:
     apiVersion:
@@ -9698,7 +9686,7 @@ var CRDsValidation map[string]string = map[string]string{
   - spec
   type: object
 `,
-	"virtualmachineclusterinstancetype": `openAPIV3Schema:
+ "virtualmachineclusterinstancetype" : `openAPIV3Schema:
   description: VirtualMachineClusterInstancetype is a cluster scoped version of VirtualMachineInstancetype
     resource.
   properties:
@@ -9976,7 +9964,7 @@ var CRDsValidation map[string]string = map[string]string{
   - spec
   type: object
 `,
-	"virtualmachineclusterpreference": `openAPIV3Schema:
+ "virtualmachineclusterpreference" : `openAPIV3Schema:
   description: VirtualMachineClusterPreference is a cluster scoped version of the
     VirtualMachinePreference resource.
   properties:
@@ -10682,7 +10670,7 @@ var CRDsValidation map[string]string = map[string]string{
   - spec
   type: object
 `,
-	"virtualmachineexport": `openAPIV3Schema:
+ "virtualmachineexport" : `openAPIV3Schema:
   description: VirtualMachineExport defines the operation of exporting a VM source
   properties:
     apiVersion:
@@ -11019,7 +11007,7 @@ var CRDsValidation map[string]string = map[string]string{
   - spec
   type: object
 `,
-	"virtualmachineinstance": `openAPIV3Schema:
+ "virtualmachineinstance" : `openAPIV3Schema:
   description: VirtualMachineInstance is *the* VirtualMachineInstance Definition.
     It represents a virtual machine in the runtime environment of kubernetes.
   properties:
@@ -12645,62 +12633,50 @@ var CRDsValidation map[string]string = map[string]string{
                           inbound:
                             properties:
                               average:
-                                anyOf:
-                                - type: integer
-                                - type: string
                                 description: |-
-                                          Average rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
+                                  Average rate in KiB/s.
+                                  Specify the value as a positive integer in KiB.
+                                format: int32
+                                minimum: 1
+                                type: integer
                               burst:
-                                anyOf:
-                                - type: integer
-                                - type: string
                                 description: |-
-                                          Burst size in KiB.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
+                                  Burst size in KiB.
+                                  Specify the value as a positive integer in KiB.
+                                format: int32
+                                minimum: 1
+                                type: integer
                               peak:
-                                anyOf:
-                                - type: integer
-                                - type: string
                                 description: |-
-                                          Peak rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
+                                  Peak rate in KiB/s.
+                                  Specify the value as a positive integer in KiB.
+                                format: int32
+                                minimum: 1
+                                type: integer
                             type: object
                           outbound:
                             properties:
                               average:
-                                anyOf:
-                                - type: integer
-                                - type: string
                                 description: |-
-                                          Average rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
+                                  Average rate in KiB/s.
+                                  Specify the value as a positive integer in KiB.
+                                format: int32
+                                minimum: 1
+                                type: integer
                               burst:
-                                anyOf:
-                                - type: integer
-                                - type: string
                                 description: |-
-                                          Burst size in KiB.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
+                                  Burst size in KiB.
+                                  Specify the value as a positive integer in KiB.
+                                format: int32
+                                minimum: 1
+                                type: integer
                               peak:
-                                anyOf:
-                                - type: integer
-                                - type: string
                                 description: |-
-                                          Peak rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
+                                  Peak rate in KiB/s.
+                                  Specify the value as a positive integer in KiB.
+                                format: int32
+                                minimum: 1
+                                type: integer
                             type: object
                         type: object
                       binding:
@@ -15576,7 +15552,7 @@ var CRDsValidation map[string]string = map[string]string{
   - spec
   type: object
 `,
-	"virtualmachineinstancemigration": `openAPIV3Schema:
+ "virtualmachineinstancemigration" : `openAPIV3Schema:
   description: |-
     VirtualMachineInstanceMigration represents the object tracking a VMI's migration
     to another host in the cluster
@@ -16020,7 +15996,7 @@ var CRDsValidation map[string]string = map[string]string{
   - spec
   type: object
 `,
-	"virtualmachineinstancepreset": `openAPIV3Schema:
+ "virtualmachineinstancepreset" : `openAPIV3Schema:
   description: |-
     Deprecated for removal in v2, please use VirtualMachineInstanceType and VirtualMachinePreference instead.
 
@@ -16578,62 +16554,50 @@ var CRDsValidation map[string]string = map[string]string{
                           inbound:
                             properties:
                               average:
-                                anyOf:
-                                - type: integer
-                                - type: string
                                 description: |-
-                                          Average rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
+                                  Average rate in KiB/s.
+                                  Specify the value as a positive integer in KiB.
+                                format: int32
+                                minimum: 1
+                                type: integer
                               burst:
-                                anyOf:
-                                - type: integer
-                                - type: string
                                 description: |-
-                                          Burst size in KiB.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
+                                  Burst size in KiB.
+                                  Specify the value as a positive integer in KiB.
+                                format: int32
+                                minimum: 1
+                                type: integer
                               peak:
-                                anyOf:
-                                - type: integer
-                                - type: string
                                 description: |-
-                                          Peak rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
+                                  Peak rate in KiB/s.
+                                  Specify the value as a positive integer in KiB.
+                                format: int32
+                                minimum: 1
+                                type: integer
                             type: object
                           outbound:
                             properties:
                               average:
-                                anyOf:
-                                - type: integer
-                                - type: string
                                 description: |-
-                                          Average rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
+                                  Average rate in KiB/s.
+                                  Specify the value as a positive integer in KiB.
+                                format: int32
+                                minimum: 1
+                                type: integer
                               burst:
-                                anyOf:
-                                - type: integer
-                                - type: string
                                 description: |-
-                                          Burst size in KiB.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
+                                  Burst size in KiB.
+                                  Specify the value as a positive integer in KiB.
+                                format: int32
+                                minimum: 1
+                                type: integer
                               peak:
-                                anyOf:
-                                - type: integer
-                                - type: string
                                 description: |-
-                                          Peak rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
+                                  Peak rate in KiB/s.
+                                  Specify the value as a positive integer in KiB.
+                                format: int32
+                                minimum: 1
+                                type: integer
                             type: object
                         type: object
                       binding:
@@ -17481,7 +17445,7 @@ var CRDsValidation map[string]string = map[string]string{
       type: object
   type: object
 `,
-	"virtualmachineinstancereplicaset": `openAPIV3Schema:
+ "virtualmachineinstancereplicaset" : `openAPIV3Schema:
   description: VirtualMachineInstance is *the* VirtualMachineInstance Definition.
     It represents a virtual machine in the runtime environment of kubernetes.
   properties:
@@ -19199,62 +19163,50 @@ var CRDsValidation map[string]string = map[string]string{
                                   inbound:
                                     properties:
                                       average:
-                                        anyOf:
-                                        - type: integer
-                                        - type: string
                                         description: |-
                                           Average rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                        x-kubernetes-int-or-string: true
+                                          Specify the value as a positive integer in KiB.
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
                                       burst:
-                                        anyOf:
-                                        - type: integer
-                                        - type: string
                                         description: |-
                                           Burst size in KiB.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                        x-kubernetes-int-or-string: true
+                                          Specify the value as a positive integer in KiB.
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
                                       peak:
-                                        anyOf:
-                                        - type: integer
-                                        - type: string
                                         description: |-
                                           Peak rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                        x-kubernetes-int-or-string: true
+                                          Specify the value as a positive integer in KiB.
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
                                     type: object
                                   outbound:
                                     properties:
                                       average:
-                                        anyOf:
-                                        - type: integer
-                                        - type: string
                                         description: |-
                                           Average rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                        x-kubernetes-int-or-string: true
+                                          Specify the value as a positive integer in KiB.
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
                                       burst:
-                                        anyOf:
-                                        - type: integer
-                                        - type: string
                                         description: |-
                                           Burst size in KiB.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                        x-kubernetes-int-or-string: true
+                                          Specify the value as a positive integer in KiB.
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
                                       peak:
-                                        anyOf:
-                                        - type: integer
-                                        - type: string
                                         description: |-
                                           Peak rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                        x-kubernetes-int-or-string: true
+                                          Specify the value as a positive integer in KiB.
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
                                     type: object
                                 type: object
                               binding:
@@ -21296,7 +21248,7 @@ var CRDsValidation map[string]string = map[string]string{
   - spec
   type: object
 `,
-	"virtualmachineinstancetype": `openAPIV3Schema:
+ "virtualmachineinstancetype" : `openAPIV3Schema:
   description: |-
     VirtualMachineInstancetype resource contains quantitative and resource related VirtualMachine configuration
     that can be used by multiple VirtualMachine resources.
@@ -21575,7 +21527,7 @@ var CRDsValidation map[string]string = map[string]string{
   - spec
   type: object
 `,
-	"virtualmachinepool": `openAPIV3Schema:
+ "virtualmachinepool" : `openAPIV3Schema:
   description: |-
     VirtualMachinePool resource contains a VirtualMachine configuration
     that can be used to replicate multiple VirtualMachine resources.
@@ -24371,62 +24323,50 @@ var CRDsValidation map[string]string = map[string]string{
                                           inbound:
                                             properties:
                                               average:
-                                                anyOf:
-                                                - type: integer
-                                                - type: string
                                                 description: |-
-                                          Average rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                                x-kubernetes-int-or-string: true
+                                                  Average rate in KiB/s.
+                                                  Specify the value as a positive integer in KiB.
+                                                format: int32
+                                                minimum: 1
+                                                type: integer
                                               burst:
-                                                anyOf:
-                                                - type: integer
-                                                - type: string
                                                 description: |-
-                                          Burst size in KiB.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                                x-kubernetes-int-or-string: true
+                                                  Burst size in KiB.
+                                                  Specify the value as a positive integer in KiB.
+                                                format: int32
+                                                minimum: 1
+                                                type: integer
                                               peak:
-                                                anyOf:
-                                                - type: integer
-                                                - type: string
                                                 description: |-
-                                          Peak rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                                x-kubernetes-int-or-string: true
+                                                  Peak rate in KiB/s.
+                                                  Specify the value as a positive integer in KiB.
+                                                format: int32
+                                                minimum: 1
+                                                type: integer
                                             type: object
                                           outbound:
                                             properties:
                                               average:
-                                                anyOf:
-                                                - type: integer
-                                                - type: string
                                                 description: |-
-                                          Average rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                                x-kubernetes-int-or-string: true
+                                                  Average rate in KiB/s.
+                                                  Specify the value as a positive integer in KiB.
+                                                format: int32
+                                                minimum: 1
+                                                type: integer
                                               burst:
-                                                anyOf:
-                                                - type: integer
-                                                - type: string
                                                 description: |-
-                                          Burst size in KiB.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                                x-kubernetes-int-or-string: true
+                                                  Burst size in KiB.
+                                                  Specify the value as a positive integer in KiB.
+                                                format: int32
+                                                minimum: 1
+                                                type: integer
                                               peak:
-                                                anyOf:
-                                                - type: integer
-                                                - type: string
                                                 description: |-
-                                          Peak rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                                x-kubernetes-int-or-string: true
+                                                  Peak rate in KiB/s.
+                                                  Specify the value as a positive integer in KiB.
+                                                format: int32
+                                                minimum: 1
+                                                type: integer
                                             type: object
                                         type: object
                                       binding:
@@ -26500,7 +26440,7 @@ var CRDsValidation map[string]string = map[string]string{
   - spec
   type: object
 `,
-	"virtualmachinepreference": `openAPIV3Schema:
+ "virtualmachinepreference" : `openAPIV3Schema:
   description: VirtualMachinePreference resource contains optional preferences related
     to the VirtualMachine.
   properties:
@@ -27206,7 +27146,7 @@ var CRDsValidation map[string]string = map[string]string{
   - spec
   type: object
 `,
-	"virtualmachinerestore": `openAPIV3Schema:
+ "virtualmachinerestore" : `openAPIV3Schema:
   description: VirtualMachineRestore defines the operation of restoring a VM
   properties:
     apiVersion:
@@ -27367,7 +27307,7 @@ var CRDsValidation map[string]string = map[string]string{
   - spec
   type: object
 `,
-	"virtualmachinesnapshot": `openAPIV3Schema:
+ "virtualmachinesnapshot" : `openAPIV3Schema:
   description: VirtualMachineSnapshot defines the operation of snapshotting a VM
   properties:
     apiVersion:
@@ -27531,7 +27471,7 @@ var CRDsValidation map[string]string = map[string]string{
   - spec
   type: object
 `,
-	"virtualmachinesnapshotcontent": `openAPIV3Schema:
+ "virtualmachinesnapshotcontent" : `openAPIV3Schema:
   description: VirtualMachineSnapshotContent contains the snapshot data
   properties:
     apiVersion:
@@ -30014,62 +29954,50 @@ var CRDsValidation map[string]string = map[string]string{
                                               inbound:
                                                 properties:
                                                   average:
-                                                    anyOf:
-                                                    - type: integer
-                                                    - type: string
                                                     description: |-
-                                          Average rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                                    x-kubernetes-int-or-string: true
+                                                      Average rate in KiB/s.
+                                                      Specify the value as a positive integer in KiB.
+                                                    format: int32
+                                                    minimum: 1
+                                                    type: integer
                                                   burst:
-                                                    anyOf:
-                                                    - type: integer
-                                                    - type: string
                                                     description: |-
-                                          Burst size in KiB.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                                    x-kubernetes-int-or-string: true
+                                                      Burst size in KiB.
+                                                      Specify the value as a positive integer in KiB.
+                                                    format: int32
+                                                    minimum: 1
+                                                    type: integer
                                                   peak:
-                                                    anyOf:
-                                                    - type: integer
-                                                    - type: string
                                                     description: |-
-                                          Peak rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                                    x-kubernetes-int-or-string: true
+                                                      Peak rate in KiB/s.
+                                                      Specify the value as a positive integer in KiB.
+                                                    format: int32
+                                                    minimum: 1
+                                                    type: integer
                                                 type: object
                                               outbound:
                                                 properties:
                                                   average:
-                                                    anyOf:
-                                                    - type: integer
-                                                    - type: string
                                                     description: |-
-                                          Average rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                                    x-kubernetes-int-or-string: true
+                                                      Average rate in KiB/s.
+                                                      Specify the value as a positive integer in KiB.
+                                                    format: int32
+                                                    minimum: 1
+                                                    type: integer
                                                   burst:
-                                                    anyOf:
-                                                    - type: integer
-                                                    - type: string
                                                     description: |-
-                                          Burst size in KiB.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                                    x-kubernetes-int-or-string: true
+                                                      Burst size in KiB.
+                                                      Specify the value as a positive integer in KiB.
+                                                    format: int32
+                                                    minimum: 1
+                                                    type: integer
                                                   peak:
-                                                    anyOf:
-                                                    - type: integer
-                                                    - type: string
                                                     description: |-
-                                          Peak rate in KiB/s.
-                                          Specify the value as a positive integer in KiB without a unit suffix.
-                                                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                                    x-kubernetes-int-or-string: true
+                                                      Peak rate in KiB/s.
+                                                      Specify the value as a positive integer in KiB.
+                                                    format: int32
+                                                    minimum: 1
+                                                    type: integer
                                                 type: object
                                             type: object
                                           binding:

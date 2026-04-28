@@ -25,7 +25,6 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	k8sfield "k8s.io/apimachinery/pkg/util/validation/field"
 
@@ -394,66 +393,17 @@ var _ = Describe("Validating VMI network spec", func() {
 		)
 	})
 
-	It("should reject invalid bandwidth values", func() {
-		spec := &v1.VirtualMachineInstanceSpec{}
-		spec.Domain.Devices.Interfaces = []v1.Interface{
-			{
-				Name: "default",
-				InterfaceBindingMethod: v1.InterfaceBindingMethod{
-					Bridge: &v1.InterfaceBridge{},
-				},
-				Bandwidth: &v1.Bandwidth{
-					Inbound: &v1.BandwidthParams{
-						Average: pointer.P(resource.MustParse("1Ki")),
-						Peak:    resource.NewQuantity(-1, resource.DecimalSI),
-						Burst:   pointer.P(resource.MustParse("1500m")),
-					},
-				},
-			},
-		}
-		spec.Networks = []v1.Network{{
-			Name:          "default",
-			NetworkSource: v1.NetworkSource{Pod: &v1.PodNetwork{}},
-		}}
-
-		validator := admitter.NewValidator(k8sfield.NewPath("fake"), spec, stubClusterConfigChecker{})
-		causes := validator.Validate()
-
-		Expect(causes).To(ConsistOf(
-			metav1.StatusCause{
-				Type:    "FieldValueInvalid",
-				Message: "Bridge on pod network configuration is not enabled under kubevirt-config",
-				Field:   "fake.domain.devices.interfaces[0].name",
-			},
-			metav1.StatusCause{
-				Type:    "FieldValueInvalid",
-				Message: "bandwidth inbound average must be specified as a positive integer in KiB without a unit suffix",
-				Field:   "fake.domain.devices.interfaces[0].bandwidth.inbound.average",
-			},
-			metav1.StatusCause{
-				Type:    "FieldValueInvalid",
-				Message: "bandwidth inbound peak must be greater than 0 KiB",
-				Field:   "fake.domain.devices.interfaces[0].bandwidth.inbound.peak",
-			},
-			metav1.StatusCause{
-				Type:    "FieldValueInvalid",
-				Message: "bandwidth inbound burst must be specified as a positive integer in KiB without a unit suffix",
-				Field:   "fake.domain.devices.interfaces[0].bandwidth.inbound.burst",
-			},
-		))
-	})
-
 	It("should accept bandwidth values specified as positive integers in KiB", func() {
 		spec := &v1.VirtualMachineInstanceSpec{}
 		spec.Domain.Devices.Interfaces = []v1.Interface{*v1.DefaultMasqueradeNetworkInterface()}
 		spec.Domain.Devices.Interfaces[0].Bandwidth = &v1.Bandwidth{
 			Inbound: &v1.BandwidthParams{
-				Average: pointer.P(resource.MustParse("1")),
-				Peak:    pointer.P(resource.MustParse("128")),
-				Burst:   pointer.P(resource.MustParse("256")),
+				Average: pointer.P(uint32(1)),
+				Peak:    pointer.P(uint32(128)),
+				Burst:   pointer.P(uint32(256)),
 			},
 			Outbound: &v1.BandwidthParams{
-				Average: pointer.P(resource.MustParse("512")),
+				Average: pointer.P(uint32(512)),
 			},
 		}
 		spec.Networks = []v1.Network{*v1.DefaultPodNetwork()}
@@ -467,7 +417,7 @@ var _ = Describe("Validating VMI network spec", func() {
 		spec.Domain.Devices.Interfaces = []v1.Interface{*v1.DefaultMasqueradeNetworkInterface()}
 		spec.Domain.Devices.Interfaces[0].Bandwidth = &v1.Bandwidth{
 			Inbound: &v1.BandwidthParams{
-				Average: pointer.P(resource.MustParse("0")),
+				Average: pointer.P(uint32(0)),
 			},
 		}
 		spec.Networks = []v1.Network{*v1.DefaultPodNetwork()}

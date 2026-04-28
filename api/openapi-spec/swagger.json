@@ -13879,16 +13879,19 @@
     "type": "object",
     "properties": {
      "average": {
-      "description": "Average rate in bytes/sec",
-      "$ref": "#/definitions/k8s.io.apimachinery.pkg.api.resource.Quantity"
+      "description": "Average rate in KiB/s. Specify the value as a positive integer in KiB.",
+      "type": "integer",
+      "format": "int64"
      },
      "burst": {
-      "description": "Burst size in bytes",
-      "$ref": "#/definitions/k8s.io.apimachinery.pkg.api.resource.Quantity"
+      "description": "Burst size in KiB. Specify the value as a positive integer in KiB.",
+      "type": "integer",
+      "format": "int64"
      },
      "peak": {
-      "description": "Peak rate in bytes/sec",
-      "$ref": "#/definitions/k8s.io.apimachinery.pkg.api.resource.Quantity"
+      "description": "Peak rate in KiB/s. Specify the value as a positive integer in KiB.",
+      "type": "integer",
+      "format": "int64"
      }
     }
    },

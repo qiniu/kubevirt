@@ -1500,17 +1500,20 @@ type Bandwidth struct {
 
 type BandwidthParams struct {
 	// Average rate in KiB/s.
-	// Specify the value as a positive integer in KiB without a unit suffix.
+	// Specify the value as a positive integer in KiB.
+	// +kubebuilder:validation:Minimum=1
 	// +optional
-	Average *resource.Quantity `json:"average,omitempty"`
+	Average *uint32 `json:"average,omitempty"`
 	// Peak rate in KiB/s.
-	// Specify the value as a positive integer in KiB without a unit suffix.
+	// Specify the value as a positive integer in KiB.
+	// +kubebuilder:validation:Minimum=1
 	// +optional
-	Peak *resource.Quantity `json:"peak,omitempty"`
+	Peak *uint32 `json:"peak,omitempty"`
 	// Burst size in KiB.
-	// Specify the value as a positive integer in KiB without a unit suffix.
+	// Specify the value as a positive integer in KiB.
+	// +kubebuilder:validation:Minimum=1
 	// +optional
-	Burst *resource.Quantity `json:"burst,omitempty"`
+	Burst *uint32 `json:"burst,omitempty"`
 }
 
 type InterfaceState string

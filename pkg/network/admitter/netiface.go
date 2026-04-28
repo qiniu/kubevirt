@@ -23,13 +23,11 @@ import (
 	"fmt"
 	"net"
 	"regexp"
-	"strconv"
 
 	"kubevirt.io/kubevirt/pkg/network/link"
 	"kubevirt.io/kubevirt/pkg/network/vmispec"
 	hwutil "kubevirt.io/kubevirt/pkg/util/hardware"
 
-	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	k8svalidation "k8s.io/apimachinery/pkg/util/validation"
 	k8sfield "k8s.io/apimachinery/pkg/util/validation/field"
@@ -132,22 +130,12 @@ func validateBandwidth(field *k8sfield.Path, idx int, iface v1.Interface) []meta
 			return
 		}
 
-		checkQuantity := func(q *resource.Quantity, paramName string) {
+		checkQuantity := func(q *uint32, paramName string) {
 			if q == nil {
 				return
 			}
 
-			val, isInt := q.AsInt64()
-			if !isInt || q.String() != strconv.FormatInt(val, 10) {
-				causes = append(causes, metav1.StatusCause{
-					Type:    metav1.CauseTypeFieldValueInvalid,
-					Message: fmt.Sprintf("bandwidth %s %s must be specified as a positive integer in KiB without a unit suffix", direction, paramName),
-					Field:   field.Child("domain", "devices", "interfaces").Index(idx).Child("bandwidth", direction, paramName).String(),
-				})
-				return
-			}
-
-			if val <= 0 {
+			if *q == 0 {
 				causes = append(causes, metav1.StatusCause{
 					Type:    metav1.CauseTypeFieldValueInvalid,
 					Message: fmt.Sprintf("bandwidth %s %s must be greater than 0 KiB", direction, paramName),
