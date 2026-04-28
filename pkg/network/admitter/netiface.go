@@ -28,6 +28,7 @@ import (
 	"kubevirt.io/kubevirt/pkg/network/vmispec"
 	hwutil "kubevirt.io/kubevirt/pkg/util/hardware"
 
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	k8svalidation "k8s.io/apimachinery/pkg/util/validation"
 	k8sfield "k8s.io/apimachinery/pkg/util/validation/field"
@@ -113,7 +114,51 @@ func validateInterfacesFields(field *k8sfield.Path, spec *v1.VirtualMachineInsta
 		causes = append(causes, validatePciAddress(field, idx, iface)...)
 		causes = append(causes, validatePortConfiguration(field, idx, iface, networksByName[iface.Name])...)
 		causes = append(causes, validateDHCPOptions(field, idx, iface)...)
+		causes = append(causes, validateBandwidth(field, idx, iface)...)
 	}
+	return causes
+}
+
+func validateBandwidth(field *k8sfield.Path, idx int, iface v1.Interface) []metav1.StatusCause {
+	var causes []metav1.StatusCause
+
+	if iface.Bandwidth == nil {
+		return causes
+	}
+
+	validateParams := func(params *v1.BandwidthParams, direction string) {
+		if params == nil {
+			return
+		}
+
+		checkQuantity := func(q *resource.Quantity, paramName string) {
+			if q == nil {
+				return
+			}
+			val := q.Value()
+			if val < 0 {
+				causes = append(causes, metav1.StatusCause{
+					Type:    metav1.CauseTypeFieldValueInvalid,
+					Message: fmt.Sprintf("bandwidth %s %s must be greater than or equal to 0", direction, paramName),
+					Field:   field.Child("domain", "devices", "interfaces").Index(idx).Child("bandwidth", direction, paramName).String(),
+				})
+			} else if val > 0 && val < 1024 {
+				causes = append(causes, metav1.StatusCause{
+					Type:    metav1.CauseTypeFieldValueInvalid,
+					Message: fmt.Sprintf("bandwidth %s %s must be at least 1 KiB (1024 bytes) if specified", direction, paramName),
+					Field:   field.Child("domain", "devices", "interfaces").Index(idx).Child("bandwidth", direction, paramName).String(),
+				})
+			}
+		}
+
+		checkQuantity(params.Average, "average")
+		checkQuantity(params.Peak, "peak")
+		checkQuantity(params.Burst, "burst")
+	}
+
+	validateParams(iface.Bandwidth.Inbound, "inbound")
+	validateParams(iface.Bandwidth.Outbound, "outbound")
+
 	return causes
 }
 

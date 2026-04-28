@@ -25,6 +25,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	k8sfield "k8s.io/apimachinery/pkg/util/validation/field"
 
@@ -390,5 +391,48 @@ var _ = Describe("Validating VMI network spec", func() {
 				},
 			),
 		)
+	})
+
+	It("should reject invalid bandwidth values", func() {
+		spec := &v1.VirtualMachineInstanceSpec{}
+		spec.Domain.Devices.Interfaces = []v1.Interface{
+			{
+				Name: "default",
+				InterfaceBindingMethod: v1.InterfaceBindingMethod{
+					Bridge: &v1.InterfaceBridge{},
+				},
+				Bandwidth: &v1.Bandwidth{
+					Inbound: &v1.BandwidthParams{
+						Average: resource.NewQuantity(100, resource.DecimalSI),
+						Peak:    resource.NewQuantity(-1, resource.DecimalSI),
+					},
+				},
+			},
+		}
+		spec.Networks = []v1.Network{{
+			Name:          "default",
+			NetworkSource: v1.NetworkSource{Pod: &v1.PodNetwork{}},
+		}}
+
+		validator := admitter.NewValidator(k8sfield.NewPath("fake"), spec, stubClusterConfigChecker{})
+		causes := validator.Validate()
+
+		Expect(causes).To(ConsistOf(
+			metav1.StatusCause{
+				Type:    "FieldValueInvalid",
+				Message: "Bridge on pod network configuration is not enabled under kubevirt-config",
+				Field:   "fake.domain.devices.interfaces[0].name",
+			},
+			metav1.StatusCause{
+				Type:    "FieldValueInvalid",
+				Message: "bandwidth inbound average must be at least 1 KiB (1024 bytes) if specified",
+				Field:   "fake.domain.devices.interfaces[0].bandwidth.inbound.average",
+			},
+			metav1.StatusCause{
+				Type:    "FieldValueInvalid",
+				Message: "bandwidth inbound peak must be greater than or equal to 0",
+				Field:   "fake.domain.devices.interfaces[0].bandwidth.inbound.peak",
+			},
+		))
 	})
 })

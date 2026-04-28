@@ -1499,13 +1499,16 @@ type Bandwidth struct {
 }
 
 type BandwidthParams struct {
-	// Average rate in bytes/sec
+	// Average rate in bytes/sec. The actual applied granularity is KiB/sec, so the value will be truncated to the nearest KiB.
+	// Minimum supported value is 1 KiB (1024 bytes).
 	// +optional
 	Average *resource.Quantity `json:"average,omitempty"`
-	// Peak rate in bytes/sec
+	// Peak rate in bytes/sec. The actual applied granularity is KiB/sec, so the value will be truncated to the nearest KiB.
+	// Minimum supported value is 1 KiB (1024 bytes).
 	// +optional
 	Peak *resource.Quantity `json:"peak,omitempty"`
-	// Burst size in bytes
+	// Burst size in bytes. The actual applied granularity is KiB, so the value will be truncated to the nearest KiB.
+	// Minimum supported value is 1 KiB (1024 bytes).
 	// +optional
 	Burst *resource.Quantity `json:"burst,omitempty"`
 }

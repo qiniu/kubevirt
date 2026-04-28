@@ -288,7 +288,9 @@ func requiredCapabilities(vmi *v1.VirtualMachineInstance) []k8sv1.Capability {
 	if !util.IsNonRootVMI(vmi) {
 		// add a CAP_SYS_NICE capability to allow setting cpu affinity
 		capabilities = append(capabilities, CAP_SYS_NICE)
-		// add NET_ADMIN capability to allow network QoS / tc commands
+		// add NET_ADMIN capability to allow network QoS / tc commands,
+		// and ensure it's always available for potential hot-plug/hot-update scenarios
+		// typically required in cloud-provider environments.
 		capabilities = append(capabilities, "NET_ADMIN")
 	}
 

@@ -57,10 +57,16 @@ var _ = Describe("Container spec renderer", func() {
 		}
 		Context("a VMI running as root", func() {
 			BeforeEach(func() {
-				specRenderer = NewContainerSpecRenderer(containerName, img, pullPolicy, WithCapabilities(simplestVMI()))
+				allowedCapabilities = []k8sv1.Capability{
+					"NET_BIND_SERVICE",
+					"SYS_NICE",
+					"NET_ADMIN",
+				}
 			})
 
 			It("must request to add the NET_BIND_SERVICE, SYS_NICE and NET_ADMIN capabilities", func() {
+				vmi := simplestVMI()
+				specRenderer = NewContainerSpecRenderer(containerName, img, pullPolicy, WithCapabilities(vmi))
 				Expect(specRenderer.Render(exampleCommand).SecurityContext.Capabilities.Add).To(
 					ConsistOf(allowedCapabilities))
 			})
