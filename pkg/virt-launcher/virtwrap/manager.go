@@ -111,9 +111,9 @@ import (
 )
 
 const (
-	failedSyncGuestTime                       = "failed to sync guest time"
-	failedGetDomain                           = "Getting the domain failed."
-	failedGetDomainState                      = "Getting the domain state failed."
+	failedSyncGuestTime  = "failed to sync guest time"
+	failedGetDomain      = "Getting the domain failed."
+	failedGetDomainState = "Getting the domain state failed."
 
 	// parameters for hotplug port count calculation
 	hotplugLargeMemoryThreshold            = 2 * 1024 * 1024 * 1024 // 2GB

@@ -13,6 +13,7 @@ import (
 	reflect "reflect"
 
 	gomock "go.uber.org/mock/gomock"
+
 	safepath "kubevirt.io/kubevirt/pkg/safepath"
 )
 
