@@ -511,12 +511,15 @@ var _ = Describe("VM Network Controller", func() {
 		originalBandwidth := &v1.Bandwidth{
 			Inbound: &v1.BandwidthParams{
 				Average: pointer.P(uint32(1)),
+				Peak:    pointer.P(uint32(2)),
+				Burst:   pointer.P(uint32(3)),
 			},
 		}
 		updatedBandwidth := &v1.Bandwidth{
 			Inbound: &v1.BandwidthParams{
-				Average: pointer.P(uint32(2)),
-				Peak:    pointer.P(uint32(4)),
+				Average: pointer.P(uint32(4)),
+				Peak:    pointer.P(uint32(5)),
+				Burst:   pointer.P(uint32(6)),
 			},
 		}
 		expectedIface := v1.Interface{

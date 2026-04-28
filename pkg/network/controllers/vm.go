@@ -167,39 +167,67 @@ func applyDynamicIfaceRequestOnVMI(
 	for _, vmIface := range vm.Spec.Template.Spec.Domain.Devices.Interfaces {
 		vmiIfaceCopy, existsInVMISpec := vmiIndexedInterfaces[vmIface.Name]
 
-		shouldHotplugIface := !existsInVMISpec &&
-			vmIface.State != v1.InterfaceStateAbsent &&
-			(vmIface.InterfaceBindingMethod.Bridge != nil || vmIface.InterfaceBindingMethod.SRIOV != nil)
-
-		shouldUpdateExistingIfaceState := existsInVMISpec &&
-			vmIface.State != vmiIfaceCopy.State &&
-			vmiIfaceCopy.State != v1.InterfaceStateAbsent
-
-		shouldUpdateExistingIfaceBandwidth := existsInVMISpec &&
-			!equality.Semantic.DeepEqual(vmIface.Bandwidth, vmiIfaceCopy.Bandwidth) &&
-			vmiIfaceCopy.State != v1.InterfaceStateAbsent
-
-		switch {
-		case shouldHotplugIface:
+		if shouldHotplugDynamicInterface(vmIface, existsInVMISpec) {
 			vmiSpecCopy.Networks = append(vmiSpecCopy.Networks, vmIndexedNetworks[vmIface.Name])
 			vmiSpecCopy.Domain.Devices.Interfaces = append(vmiSpecCopy.Domain.Devices.Interfaces, vmIface)
-
-		case shouldUpdateExistingIfaceState || shouldUpdateExistingIfaceBandwidth:
-			if !(hasOrdinalIfaces && vmIface.State == v1.InterfaceStateAbsent) {
-				vmiIface := vmispec.LookupInterfaceByName(vmiSpecCopy.Domain.Devices.Interfaces, vmIface.Name)
-				if vmiIface == nil {
-					continue
-				}
-				if shouldUpdateExistingIfaceState {
-					vmiIface.State = vmIface.State
-				}
-				if shouldUpdateExistingIfaceBandwidth {
-					vmiIface.Bandwidth = vmIface.Bandwidth.DeepCopy()
-				}
-			}
+			continue
 		}
+
+		shouldUpdateState, shouldUpdateBandwidth := shouldUpdateExistingDynamicInterface(
+			vmIface, vmiIfaceCopy, existsInVMISpec, hasOrdinalIfaces,
+		)
+		if !shouldUpdateState && !shouldUpdateBandwidth {
+			continue
+		}
+
+		updateExistingVMIInterface(vmiSpecCopy, vmIface, shouldUpdateState, shouldUpdateBandwidth)
 	}
 	return vmiSpecCopy
+}
+
+func shouldHotplugDynamicInterface(vmIface v1.Interface, existsInVMISpec bool) bool {
+	return !existsInVMISpec &&
+		vmIface.State != v1.InterfaceStateAbsent &&
+		(vmIface.InterfaceBindingMethod.Bridge != nil || vmIface.InterfaceBindingMethod.SRIOV != nil)
+}
+
+func shouldUpdateExistingDynamicInterface(
+	vmIface, vmiIface v1.Interface,
+	existsInVMISpec, hasOrdinalIfaces bool,
+) (shouldUpdateState bool, shouldUpdateBandwidth bool) {
+	if !existsInVMISpec {
+		return false, false
+	}
+
+	if hasOrdinalIfaces && vmIface.State == v1.InterfaceStateAbsent {
+		return false, false
+	}
+
+	if vmiIface.State == v1.InterfaceStateAbsent {
+		return false, false
+	}
+
+	shouldUpdateState = vmIface.State != vmiIface.State
+	shouldUpdateBandwidth = !equality.Semantic.DeepEqual(vmIface.Bandwidth, vmiIface.Bandwidth)
+	return shouldUpdateState, shouldUpdateBandwidth
+}
+
+func updateExistingVMIInterface(
+	vmiSpecCopy *v1.VirtualMachineInstanceSpec,
+	vmIface v1.Interface,
+	shouldUpdateState, shouldUpdateBandwidth bool,
+) {
+	vmiIface := vmispec.LookupInterfaceByName(vmiSpecCopy.Domain.Devices.Interfaces, vmIface.Name)
+	if vmiIface == nil {
+		return
+	}
+
+	if shouldUpdateState {
+		vmiIface.State = vmIface.State
+	}
+	if shouldUpdateBandwidth {
+		vmiIface.Bandwidth = vmIface.Bandwidth.DeepCopy()
+	}
 }
 
 func syncNetworks(vmNets, vmiNets []v1.Network) []v1.Network {
