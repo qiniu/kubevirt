@@ -212,13 +212,6 @@ func bandwidthValueToLibvirtKiB(value *uint32) uint {
 		return 0
 	}
 
-	// Clamp overly large values to avoid architecture-dependent uint overflows.
-	// ^uint(0) dynamically gets the maximum possible value for a uint on the current machine.
-	maxUint := uint64(^uint(0))
-	if uint64(*value) > maxUint {
-		return uint(maxUint)
-	}
-
 	return uint(*value)
 }
 

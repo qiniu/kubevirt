@@ -18903,21 +18903,21 @@ func schema_kubevirtio_api_core_v1_BandwidthParams(ref common.ReferenceCallback)
 				Properties: map[string]spec.Schema{
 					"average": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Average rate in KiB/s. Specify the value as a positive integer in KiB.",
+							Description: "Average rate in KiB/s. Specify the value as a positive integer (unit: KiB/s).",
 							Type:        []string{"integer"},
 							Format:      "int64",
 						},
 					},
 					"peak": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Peak rate in KiB/s. Specify the value as a positive integer in KiB.",
+							Description: "Peak rate in KiB/s. Specify the value as a positive integer (unit: KiB/s).",
 							Type:        []string{"integer"},
 							Format:      "int64",
 						},
 					},
 					"burst": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Burst size in KiB. Specify the value as a positive integer in KiB.",
+							Description: "Burst size in KiB. Specify the value as a positive integer (unit: KiB).",
 							Type:        []string{"integer"},
 							Format:      "int64",
 						},

@@ -130,6 +130,18 @@ func validateBandwidth(field *k8sfield.Path, idx int, iface v1.Interface) []meta
 			return
 		}
 
+		requireAverage := func(q *uint32, paramName string) {
+			if q == nil || params.Average != nil {
+				return
+			}
+
+			causes = append(causes, metav1.StatusCause{
+				Type:    metav1.CauseTypeFieldValueInvalid,
+				Message: fmt.Sprintf("bandwidth %s %s requires average to be set", direction, paramName),
+				Field:   field.Child("domain", "devices", "interfaces").Index(idx).Child("bandwidth", direction, paramName).String(),
+			})
+		}
+
 		checkQuantity := func(q *uint32, paramName string) {
 			if q == nil {
 				return
@@ -144,6 +156,8 @@ func validateBandwidth(field *k8sfield.Path, idx int, iface v1.Interface) []meta
 			}
 		}
 
+		requireAverage(params.Peak, "peak")
+		requireAverage(params.Burst, "burst")
 		checkQuantity(params.Average, "average")
 		checkQuantity(params.Peak, "peak")
 		checkQuantity(params.Burst, "burst")

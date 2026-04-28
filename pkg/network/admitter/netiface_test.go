@@ -429,4 +429,28 @@ var _ = Describe("Validating VMI network spec", func() {
 			Field:   "fake.domain.devices.interfaces[0].bandwidth.inbound.average",
 		}))
 	})
+
+	DescribeTable("should reject bandwidth peak or burst without average", func(direction, paramName string, params *v1.BandwidthParams) {
+		spec := &v1.VirtualMachineInstanceSpec{}
+		spec.Domain.Devices.Interfaces = []v1.Interface{*v1.DefaultMasqueradeNetworkInterface()}
+		spec.Domain.Devices.Interfaces[0].Bandwidth = &v1.Bandwidth{}
+		if direction == "inbound" {
+			spec.Domain.Devices.Interfaces[0].Bandwidth.Inbound = params
+		} else {
+			spec.Domain.Devices.Interfaces[0].Bandwidth.Outbound = params
+		}
+		spec.Networks = []v1.Network{*v1.DefaultPodNetwork()}
+
+		validator := admitter.NewValidator(k8sfield.NewPath("fake"), spec, stubClusterConfigChecker{})
+		Expect(validator.Validate()).To(ConsistOf(metav1.StatusCause{
+			Type:    "FieldValueInvalid",
+			Message: fmt.Sprintf("bandwidth %s %s requires average to be set", direction, paramName),
+			Field:   fmt.Sprintf("fake.domain.devices.interfaces[0].bandwidth.%s.%s", direction, paramName),
+		}))
+	},
+		Entry("for inbound peak", "inbound", "peak", &v1.BandwidthParams{Peak: pointer.P(uint32(128))}),
+		Entry("for inbound burst", "inbound", "burst", &v1.BandwidthParams{Burst: pointer.P(uint32(256))}),
+		Entry("for outbound peak", "outbound", "peak", &v1.BandwidthParams{Peak: pointer.P(uint32(128))}),
+		Entry("for outbound burst", "outbound", "burst", &v1.BandwidthParams{Burst: pointer.P(uint32(256))}),
+	)
 })

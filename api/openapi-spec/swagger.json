@@ -13879,17 +13879,17 @@
     "type": "object",
     "properties": {
      "average": {
-      "description": "Average rate in KiB/s. Specify the value as a positive integer in KiB.",
+      "description": "Average rate in KiB/s. Specify the value as a positive integer (unit: KiB/s).",
       "type": "integer",
       "format": "int64"
      },
      "burst": {
-      "description": "Burst size in KiB. Specify the value as a positive integer in KiB.",
+      "description": "Burst size in KiB. Specify the value as a positive integer (unit: KiB).",
       "type": "integer",
       "format": "int64"
      },
      "peak": {
-      "description": "Peak rate in KiB/s. Specify the value as a positive integer in KiB.",
+      "description": "Peak rate in KiB/s. Specify the value as a positive integer (unit: KiB/s).",
       "type": "integer",
       "format": "int64"
      }

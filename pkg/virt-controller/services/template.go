@@ -93,6 +93,7 @@ const qemuTimeoutJitterRange = 120
 
 const (
 	CAP_NET_BIND_SERVICE = "NET_BIND_SERVICE"
+	CAP_NET_ADMIN        = "NET_ADMIN"
 	CAP_SYS_NICE         = "SYS_NICE"
 )
 

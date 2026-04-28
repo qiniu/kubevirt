@@ -1500,17 +1500,17 @@ type Bandwidth struct {
 
 type BandwidthParams struct {
 	// Average rate in KiB/s.
-	// Specify the value as a positive integer in KiB.
+	// Specify the value as a positive integer (unit: KiB/s).
 	// +kubebuilder:validation:Minimum=1
 	// +optional
 	Average *uint32 `json:"average,omitempty"`
 	// Peak rate in KiB/s.
-	// Specify the value as a positive integer in KiB.
+	// Specify the value as a positive integer (unit: KiB/s).
 	// +kubebuilder:validation:Minimum=1
 	// +optional
 	Peak *uint32 `json:"peak,omitempty"`
 	// Burst size in KiB.
-	// Specify the value as a positive integer in KiB.
+	// Specify the value as a positive integer (unit: KiB).
 	// +kubebuilder:validation:Minimum=1
 	// +optional
 	Burst *uint32 `json:"burst,omitempty"`

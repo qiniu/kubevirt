@@ -52,15 +52,15 @@ var _ = Describe("Container spec renderer", func() {
 	Context("vmi capabilities", func() {
 		allowedCapabilities := []k8sv1.Capability{
 			CAP_NET_BIND_SERVICE,
+			CAP_NET_ADMIN,
 			CAP_SYS_NICE,
-			"NET_ADMIN",
 		}
 		Context("a VMI running as root", func() {
 			BeforeEach(func() {
 				allowedCapabilities = []k8sv1.Capability{
-					"NET_BIND_SERVICE",
-					"SYS_NICE",
-					"NET_ADMIN",
+					CAP_NET_BIND_SERVICE,
+					CAP_SYS_NICE,
+					CAP_NET_ADMIN,
 				}
 			})
 

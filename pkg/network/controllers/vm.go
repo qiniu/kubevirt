@@ -203,19 +203,22 @@ func syncNetworks(vmNets, vmiNets []v1.Network) []v1.Network {
 	vmIndexedNets := vmispec.IndexNetworkSpecByName(vmNets)
 	updatedVMINets := make([]v1.Network, 0, len(vmiNets))
 	for _, vmiNet := range vmiNets {
-		updatedVMINet := *vmiNet.DeepCopy()
 		vmNet, exists := vmIndexedNets[vmiNet.Name]
 		if !exists {
 			// Keep VMI-only networks until the detach flow fully converges and status catches up.
+			updatedVMINets = append(updatedVMINets, vmiNet)
+			continue
+		}
+
+		if vmNet.Multus != nil && vmiNet.Multus != nil && vmNet.Multus.NetworkName != vmiNet.Multus.NetworkName {
+			updatedVMINet := vmiNet
+			updatedVMINet.Multus = vmiNet.Multus.DeepCopy()
+			updatedVMINet.Multus.NetworkName = vmNet.Multus.NetworkName
 			updatedVMINets = append(updatedVMINets, updatedVMINet)
 			continue
 		}
 
-		if vmNet.Multus != nil && updatedVMINet.Multus != nil {
-			updatedVMINet.Multus.NetworkName = vmNet.Multus.NetworkName
-		}
-
-		updatedVMINets = append(updatedVMINets, updatedVMINet)
+		updatedVMINets = append(updatedVMINets, vmiNet)
 	}
 	return updatedVMINets
 }

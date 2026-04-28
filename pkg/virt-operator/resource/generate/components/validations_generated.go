@@ -6501,21 +6501,21 @@ var CRDsValidation map[string]string = map[string]string{
                                       average:
                                         description: |-
                                           Average rate in KiB/s.
-                                          Specify the value as a positive integer in KiB.
+                                          Specify the value as a positive integer (unit: KiB/s).
                                         format: int32
                                         minimum: 1
                                         type: integer
                                       burst:
                                         description: |-
                                           Burst size in KiB.
-                                          Specify the value as a positive integer in KiB.
+                                          Specify the value as a positive integer (unit: KiB).
                                         format: int32
                                         minimum: 1
                                         type: integer
                                       peak:
                                         description: |-
                                           Peak rate in KiB/s.
-                                          Specify the value as a positive integer in KiB.
+                                          Specify the value as a positive integer (unit: KiB/s).
                                         format: int32
                                         minimum: 1
                                         type: integer
@@ -6525,21 +6525,21 @@ var CRDsValidation map[string]string = map[string]string{
                                       average:
                                         description: |-
                                           Average rate in KiB/s.
-                                          Specify the value as a positive integer in KiB.
+                                          Specify the value as a positive integer (unit: KiB/s).
                                         format: int32
                                         minimum: 1
                                         type: integer
                                       burst:
                                         description: |-
                                           Burst size in KiB.
-                                          Specify the value as a positive integer in KiB.
+                                          Specify the value as a positive integer (unit: KiB).
                                         format: int32
                                         minimum: 1
                                         type: integer
                                       peak:
                                         description: |-
                                           Peak rate in KiB/s.
-                                          Specify the value as a positive integer in KiB.
+                                          Specify the value as a positive integer (unit: KiB/s).
                                         format: int32
                                         minimum: 1
                                         type: integer
@@ -12635,21 +12635,21 @@ var CRDsValidation map[string]string = map[string]string{
                               average:
                                 description: |-
                                   Average rate in KiB/s.
-                                  Specify the value as a positive integer in KiB.
+                                  Specify the value as a positive integer (unit: KiB/s).
                                 format: int32
                                 minimum: 1
                                 type: integer
                               burst:
                                 description: |-
                                   Burst size in KiB.
-                                  Specify the value as a positive integer in KiB.
+                                  Specify the value as a positive integer (unit: KiB).
                                 format: int32
                                 minimum: 1
                                 type: integer
                               peak:
                                 description: |-
                                   Peak rate in KiB/s.
-                                  Specify the value as a positive integer in KiB.
+                                  Specify the value as a positive integer (unit: KiB/s).
                                 format: int32
                                 minimum: 1
                                 type: integer
@@ -12659,21 +12659,21 @@ var CRDsValidation map[string]string = map[string]string{
                               average:
                                 description: |-
                                   Average rate in KiB/s.
-                                  Specify the value as a positive integer in KiB.
+                                  Specify the value as a positive integer (unit: KiB/s).
                                 format: int32
                                 minimum: 1
                                 type: integer
                               burst:
                                 description: |-
                                   Burst size in KiB.
-                                  Specify the value as a positive integer in KiB.
+                                  Specify the value as a positive integer (unit: KiB).
                                 format: int32
                                 minimum: 1
                                 type: integer
                               peak:
                                 description: |-
                                   Peak rate in KiB/s.
-                                  Specify the value as a positive integer in KiB.
+                                  Specify the value as a positive integer (unit: KiB/s).
                                 format: int32
                                 minimum: 1
                                 type: integer
@@ -16556,21 +16556,21 @@ var CRDsValidation map[string]string = map[string]string{
                               average:
                                 description: |-
                                   Average rate in KiB/s.
-                                  Specify the value as a positive integer in KiB.
+                                  Specify the value as a positive integer (unit: KiB/s).
                                 format: int32
                                 minimum: 1
                                 type: integer
                               burst:
                                 description: |-
                                   Burst size in KiB.
-                                  Specify the value as a positive integer in KiB.
+                                  Specify the value as a positive integer (unit: KiB).
                                 format: int32
                                 minimum: 1
                                 type: integer
                               peak:
                                 description: |-
                                   Peak rate in KiB/s.
-                                  Specify the value as a positive integer in KiB.
+                                  Specify the value as a positive integer (unit: KiB/s).
                                 format: int32
                                 minimum: 1
                                 type: integer
@@ -16580,21 +16580,21 @@ var CRDsValidation map[string]string = map[string]string{
                               average:
                                 description: |-
                                   Average rate in KiB/s.
-                                  Specify the value as a positive integer in KiB.
+                                  Specify the value as a positive integer (unit: KiB/s).
                                 format: int32
                                 minimum: 1
                                 type: integer
                               burst:
                                 description: |-
                                   Burst size in KiB.
-                                  Specify the value as a positive integer in KiB.
+                                  Specify the value as a positive integer (unit: KiB).
                                 format: int32
                                 minimum: 1
                                 type: integer
                               peak:
                                 description: |-
                                   Peak rate in KiB/s.
-                                  Specify the value as a positive integer in KiB.
+                                  Specify the value as a positive integer (unit: KiB/s).
                                 format: int32
                                 minimum: 1
                                 type: integer
@@ -19165,21 +19165,21 @@ var CRDsValidation map[string]string = map[string]string{
                                       average:
                                         description: |-
                                           Average rate in KiB/s.
-                                          Specify the value as a positive integer in KiB.
+                                          Specify the value as a positive integer (unit: KiB/s).
                                         format: int32
                                         minimum: 1
                                         type: integer
                                       burst:
                                         description: |-
                                           Burst size in KiB.
-                                          Specify the value as a positive integer in KiB.
+                                          Specify the value as a positive integer (unit: KiB).
                                         format: int32
                                         minimum: 1
                                         type: integer
                                       peak:
                                         description: |-
                                           Peak rate in KiB/s.
-                                          Specify the value as a positive integer in KiB.
+                                          Specify the value as a positive integer (unit: KiB/s).
                                         format: int32
                                         minimum: 1
                                         type: integer
@@ -19189,21 +19189,21 @@ var CRDsValidation map[string]string = map[string]string{
                                       average:
                                         description: |-
                                           Average rate in KiB/s.
-                                          Specify the value as a positive integer in KiB.
+                                          Specify the value as a positive integer (unit: KiB/s).
                                         format: int32
                                         minimum: 1
                                         type: integer
                                       burst:
                                         description: |-
                                           Burst size in KiB.
-                                          Specify the value as a positive integer in KiB.
+                                          Specify the value as a positive integer (unit: KiB).
                                         format: int32
                                         minimum: 1
                                         type: integer
                                       peak:
                                         description: |-
                                           Peak rate in KiB/s.
-                                          Specify the value as a positive integer in KiB.
+                                          Specify the value as a positive integer (unit: KiB/s).
                                         format: int32
                                         minimum: 1
                                         type: integer
@@ -24325,21 +24325,21 @@ var CRDsValidation map[string]string = map[string]string{
                                               average:
                                                 description: |-
                                                   Average rate in KiB/s.
-                                                  Specify the value as a positive integer in KiB.
+                                                  Specify the value as a positive integer (unit: KiB/s).
                                                 format: int32
                                                 minimum: 1
                                                 type: integer
                                               burst:
                                                 description: |-
                                                   Burst size in KiB.
-                                                  Specify the value as a positive integer in KiB.
+                                                  Specify the value as a positive integer (unit: KiB).
                                                 format: int32
                                                 minimum: 1
                                                 type: integer
                                               peak:
                                                 description: |-
                                                   Peak rate in KiB/s.
-                                                  Specify the value as a positive integer in KiB.
+                                                  Specify the value as a positive integer (unit: KiB/s).
                                                 format: int32
                                                 minimum: 1
                                                 type: integer
@@ -24349,21 +24349,21 @@ var CRDsValidation map[string]string = map[string]string{
                                               average:
                                                 description: |-
                                                   Average rate in KiB/s.
-                                                  Specify the value as a positive integer in KiB.
+                                                  Specify the value as a positive integer (unit: KiB/s).
                                                 format: int32
                                                 minimum: 1
                                                 type: integer
                                               burst:
                                                 description: |-
                                                   Burst size in KiB.
-                                                  Specify the value as a positive integer in KiB.
+                                                  Specify the value as a positive integer (unit: KiB).
                                                 format: int32
                                                 minimum: 1
                                                 type: integer
                                               peak:
                                                 description: |-
                                                   Peak rate in KiB/s.
-                                                  Specify the value as a positive integer in KiB.
+                                                  Specify the value as a positive integer (unit: KiB/s).
                                                 format: int32
                                                 minimum: 1
                                                 type: integer
@@ -29956,21 +29956,21 @@ var CRDsValidation map[string]string = map[string]string{
                                                   average:
                                                     description: |-
                                                       Average rate in KiB/s.
-                                                      Specify the value as a positive integer in KiB.
+                                                      Specify the value as a positive integer (unit: KiB/s).
                                                     format: int32
                                                     minimum: 1
                                                     type: integer
                                                   burst:
                                                     description: |-
                                                       Burst size in KiB.
-                                                      Specify the value as a positive integer in KiB.
+                                                      Specify the value as a positive integer (unit: KiB).
                                                     format: int32
                                                     minimum: 1
                                                     type: integer
                                                   peak:
                                                     description: |-
                                                       Peak rate in KiB/s.
-                                                      Specify the value as a positive integer in KiB.
+                                                      Specify the value as a positive integer (unit: KiB/s).
                                                     format: int32
                                                     minimum: 1
                                                     type: integer
@@ -29980,21 +29980,21 @@ var CRDsValidation map[string]string = map[string]string{
                                                   average:
                                                     description: |-
                                                       Average rate in KiB/s.
-                                                      Specify the value as a positive integer in KiB.
+                                                      Specify the value as a positive integer (unit: KiB/s).
                                                     format: int32
                                                     minimum: 1
                                                     type: integer
                                                   burst:
                                                     description: |-
                                                       Burst size in KiB.
-                                                      Specify the value as a positive integer in KiB.
+                                                      Specify the value as a positive integer (unit: KiB).
                                                     format: int32
                                                     minimum: 1
                                                     type: integer
                                                   peak:
                                                     description: |-
                                                       Peak rate in KiB/s.
-                                                      Specify the value as a positive integer in KiB.
+                                                      Specify the value as a positive integer (unit: KiB/s).
                                                     format: int32
                                                     minimum: 1
                                                     type: integer
