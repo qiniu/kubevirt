@@ -2,6 +2,8 @@
 
 set -e
 
+mkdir _out/tests/ginkgo -p
+
 source $(dirname "$0")/common.sh
 
 FOLDERS="${KUBEVIRT_DIR}/cmd/ ${KUBEVIRT_DIR}/pkg/ ${KUBEVIRT_DIR}/staging/src/kubevirt.io/ ${KUBEVIRT_DIR}/tests/framework/"
