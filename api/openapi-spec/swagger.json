@@ -13864,6 +13864,39 @@
      }
     }
    },
+   "v1.Bandwidth": {
+    "type": "object",
+    "properties": {
+     "inbound": {
+      "description": "Inbound QoS settings. When specified, average, peak, and burst must all be provided.",
+      "$ref": "#/definitions/v1.BandwidthParams"
+     },
+     "outbound": {
+      "description": "Outbound QoS settings. When specified, average, peak, and burst must all be provided.",
+      "$ref": "#/definitions/v1.BandwidthParams"
+     }
+    }
+   },
+   "v1.BandwidthParams": {
+    "type": "object",
+    "properties": {
+     "average": {
+      "description": "Average rate in KiB/s. Specify the value as a positive integer (unit: KiB/s).",
+      "type": "integer",
+      "format": "int64"
+     },
+     "burst": {
+      "description": "Burst size in KiB. Specify the value as a positive integer (unit: KiB).",
+      "type": "integer",
+      "format": "int64"
+     },
+     "peak": {
+      "description": "Peak rate in KiB/s. Specify the value as a positive integer (unit: KiB/s).",
+      "type": "integer",
+      "format": "int64"
+     }
+    }
+   },
    "v1.BlockSize": {
     "description": "BlockSize provides the option to change the block size presented to the VM for a disk. Only one of its members may be specified.",
     "type": "object",
@@ -15557,6 +15590,10 @@
       "description": "If specified, the ACPI index is used to provide network interface device naming, that is stable across changes in PCI addresses assigned to the device. This value is required to be unique across all devices and be between 1 and (16*1024-1).",
       "type": "integer",
       "format": "int32"
+     },
+     "bandwidth": {
+      "description": "Bandwidth allows setting QoS limits for the interface. When inbound or outbound is configured, average, peak, and burst must all be specified.",
+      "$ref": "#/definitions/v1.Bandwidth"
      },
      "binding": {
       "description": "Binding specifies the binding plugin that will be used to connect the interface to the guest. It provides an alternative to InterfaceBindingMethod. version: 1alphav1",

@@ -111,12 +111,9 @@ import (
 )
 
 const (
-	failedSyncGuestTime                       = "failed to sync guest time"
-	failedGetDomain                           = "Getting the domain failed."
-	failedGetDomainState                      = "Getting the domain state failed."
-	affectDeviceLiveAndConfigLibvirtFlags     = libvirt.DOMAIN_DEVICE_MODIFY_LIVE | libvirt.DOMAIN_DEVICE_MODIFY_CONFIG
-	affectDomainLiveAndConfigLibvirtFlags     = libvirt.DOMAIN_AFFECT_LIVE | libvirt.DOMAIN_AFFECT_CONFIG
-	affectDomainVCPULiveAndConfigLibvirtFlags = libvirt.DOMAIN_VCPU_LIVE | libvirt.DOMAIN_VCPU_CONFIG
+	failedSyncGuestTime  = "failed to sync guest time"
+	failedGetDomain      = "Getting the domain failed."
+	failedGetDomainState = "Getting the domain state failed."
 
 	// parameters for hotplug port count calculation
 	hotplugLargeMemoryThreshold            = 2 * 1024 * 1024 * 1024 // 2GB
@@ -125,6 +122,27 @@ const (
 	hotplugDefaultTotalPorts               = 8
 	hotplugMinRequiredFreePorts            = 3
 )
+
+var affectDeviceLiveAndConfigLibvirtFlags = func() libvirt.DomainDeviceModifyFlags {
+	var flags libvirt.DomainDeviceModifyFlags
+	flags |= libvirt.DOMAIN_DEVICE_MODIFY_LIVE
+	flags |= libvirt.DOMAIN_DEVICE_MODIFY_CONFIG
+	return flags
+}()
+
+var affectDomainLiveAndConfigLibvirtFlags = func() libvirt.DomainModificationImpact {
+	var flags libvirt.DomainModificationImpact
+	flags |= libvirt.DOMAIN_AFFECT_LIVE
+	flags |= libvirt.DOMAIN_AFFECT_CONFIG
+	return flags
+}()
+
+var affectDomainVCPULiveAndConfigLibvirtFlags = func() libvirt.DomainVcpuFlags {
+	var flags libvirt.DomainVcpuFlags
+	flags |= libvirt.DOMAIN_VCPU_LIVE
+	flags |= libvirt.DOMAIN_VCPU_CONFIG
+	return flags
+}()
 
 const maxConcurrentHotplugHostDevices = 1
 

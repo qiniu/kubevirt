@@ -182,6 +182,65 @@ var _ = Describe("Network Domain Configurator", func() {
 		),
 	)
 
+	DescribeTable("configure bandwidth",
+		func(bandwidth *v1.Bandwidth, expectedBandwidth *api.BandWidth) {
+			ifaceWithBandwidth := libvmi.InterfaceDeviceWithBridgeBinding(network1Name)
+			ifaceWithBandwidth.Bandwidth = bandwidth
+
+			vmi := libvmi.New(
+				libvmi.WithInterface(ifaceWithBandwidth),
+				libvmi.WithNetwork(libvmi.MultusNetwork(network1Name, nad1Name)),
+			)
+
+			configurator := network.NewDomainConfigurator(
+				network.WithDomainAttachmentByInterfaceName(map[string]string{network1Name: string(v1.Tap)}),
+				network.WithUseLaunchSecuritySEV(false),
+				network.WithUseLaunchSecurityPV(false),
+				network.WithROMTuningSupport(false),
+				network.WithVirtioModel(virtioModel),
+			)
+
+			var domain api.Domain
+			Expect(configurator.Configure(vmi, &domain)).To(Succeed())
+
+			expectedInterface := newDomainInterface(network1Name, virtioModel, withTypeEthernet(), withBandwidth(expectedBandwidth))
+			expectedDomain := newDomainWithIfaces([]api.Interface{expectedInterface})
+			Expect(domain).To(Equal(expectedDomain))
+		},
+		Entry(
+			"when inbound and outbound bandwidth limits are provided",
+			&v1.Bandwidth{
+				Inbound: &v1.BandwidthParams{
+					Average: pointer.P(uint32(1000)),
+					Peak:    pointer.P(uint32(5000)),
+					Burst:   pointer.P(uint32(1024)),
+				},
+				Outbound: &v1.BandwidthParams{
+					Average: pointer.P(uint32(128)),
+					Peak:    pointer.P(uint32(256)),
+					Burst:   pointer.P(uint32(512)),
+				},
+			},
+			&api.BandWidth{
+				Inbound: &api.BandwidthParams{
+					Average: 1000,
+					Peak:    5000,
+					Burst:   1024,
+				},
+				Outbound: &api.BandwidthParams{
+					Average: 128,
+					Peak:    256,
+					Burst:   512,
+				},
+			},
+		),
+		Entry(
+			"when an empty bandwidth object is provided",
+			&v1.Bandwidth{},
+			nil,
+		),
+	)
+
 	DescribeTable("multi-queue", func(model string, expectedInterface api.Interface) {
 		ifaceWithModel := libvmi.InterfaceDeviceWithBridgeBinding(network1Name)
 		ifaceWithModel.Model = model
@@ -265,5 +324,11 @@ func withVHostDriver(queues uint) option {
 func withLinkState(state string) option {
 	return func(iface *api.Interface) {
 		iface.LinkState = &api.LinkState{State: state}
+	}
+}
+
+func withBandwidth(bw *api.BandWidth) option {
+	return func(iface *api.Interface) {
+		iface.BandWidth = bw
 	}
 }

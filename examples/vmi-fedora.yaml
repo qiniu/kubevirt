@@ -28,7 +28,7 @@ spec:
   terminationGracePeriodSeconds: 0
   volumes:
   - containerDisk:
-      image: registry:5000/kubevirt/fedora-with-test-tooling-container-disk:devel
+      image: icoy/fedora-with-test-tooling-container-disk:dev
     name: containerdisk
   - cloudInitNoCloud:
       userData: |-

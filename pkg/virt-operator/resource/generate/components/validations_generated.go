@@ -6492,6 +6492,64 @@ var CRDsValidation map[string]string = map[string]string{
                                   in PCI addresses assigned to the device.
                                   This value is required to be unique across all devices and be between 1 and (16*1024-1).
                                 type: integer
+                              bandwidth:
+                                description: |-
+                                  Bandwidth allows setting QoS limits for the interface.
+                                  When inbound or outbound is configured, average, peak, and burst must all be specified.
+                                properties:
+                                  inbound:
+                                    description: Inbound QoS settings. When specified,
+                                      average, peak, and burst must all be provided.
+                                    properties:
+                                      average:
+                                        description: |-
+                                          Average rate in KiB/s.
+                                          Specify the value as a positive integer (unit: KiB/s).
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
+                                      burst:
+                                        description: |-
+                                          Burst size in KiB.
+                                          Specify the value as a positive integer (unit: KiB).
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
+                                      peak:
+                                        description: |-
+                                          Peak rate in KiB/s.
+                                          Specify the value as a positive integer (unit: KiB/s).
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
+                                    type: object
+                                  outbound:
+                                    description: Outbound QoS settings. When specified,
+                                      average, peak, and burst must all be provided.
+                                    properties:
+                                      average:
+                                        description: |-
+                                          Average rate in KiB/s.
+                                          Specify the value as a positive integer (unit: KiB/s).
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
+                                      burst:
+                                        description: |-
+                                          Burst size in KiB.
+                                          Specify the value as a positive integer (unit: KiB).
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
+                                      peak:
+                                        description: |-
+                                          Peak rate in KiB/s.
+                                          Specify the value as a positive integer (unit: KiB/s).
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
+                                    type: object
+                                type: object
                               binding:
                                 description: |-
                                   Binding specifies the binding plugin that will be used to connect the interface to the guest.
@@ -12574,6 +12632,64 @@ var CRDsValidation map[string]string = map[string]string{
                           in PCI addresses assigned to the device.
                           This value is required to be unique across all devices and be between 1 and (16*1024-1).
                         type: integer
+                      bandwidth:
+                        description: |-
+                          Bandwidth allows setting QoS limits for the interface.
+                          When inbound or outbound is configured, average, peak, and burst must all be specified.
+                        properties:
+                          inbound:
+                            description: Inbound QoS settings. When specified, average,
+                              peak, and burst must all be provided.
+                            properties:
+                              average:
+                                description: |-
+                                  Average rate in KiB/s.
+                                  Specify the value as a positive integer (unit: KiB/s).
+                                format: int32
+                                minimum: 1
+                                type: integer
+                              burst:
+                                description: |-
+                                  Burst size in KiB.
+                                  Specify the value as a positive integer (unit: KiB).
+                                format: int32
+                                minimum: 1
+                                type: integer
+                              peak:
+                                description: |-
+                                  Peak rate in KiB/s.
+                                  Specify the value as a positive integer (unit: KiB/s).
+                                format: int32
+                                minimum: 1
+                                type: integer
+                            type: object
+                          outbound:
+                            description: Outbound QoS settings. When specified, average,
+                              peak, and burst must all be provided.
+                            properties:
+                              average:
+                                description: |-
+                                  Average rate in KiB/s.
+                                  Specify the value as a positive integer (unit: KiB/s).
+                                format: int32
+                                minimum: 1
+                                type: integer
+                              burst:
+                                description: |-
+                                  Burst size in KiB.
+                                  Specify the value as a positive integer (unit: KiB).
+                                format: int32
+                                minimum: 1
+                                type: integer
+                              peak:
+                                description: |-
+                                  Peak rate in KiB/s.
+                                  Specify the value as a positive integer (unit: KiB/s).
+                                format: int32
+                                minimum: 1
+                                type: integer
+                            type: object
+                        type: object
                       binding:
                         description: |-
                           Binding specifies the binding plugin that will be used to connect the interface to the guest.
@@ -16443,6 +16559,64 @@ var CRDsValidation map[string]string = map[string]string{
                           in PCI addresses assigned to the device.
                           This value is required to be unique across all devices and be between 1 and (16*1024-1).
                         type: integer
+                      bandwidth:
+                        description: |-
+                          Bandwidth allows setting QoS limits for the interface.
+                          When inbound or outbound is configured, average, peak, and burst must all be specified.
+                        properties:
+                          inbound:
+                            description: Inbound QoS settings. When specified, average,
+                              peak, and burst must all be provided.
+                            properties:
+                              average:
+                                description: |-
+                                  Average rate in KiB/s.
+                                  Specify the value as a positive integer (unit: KiB/s).
+                                format: int32
+                                minimum: 1
+                                type: integer
+                              burst:
+                                description: |-
+                                  Burst size in KiB.
+                                  Specify the value as a positive integer (unit: KiB).
+                                format: int32
+                                minimum: 1
+                                type: integer
+                              peak:
+                                description: |-
+                                  Peak rate in KiB/s.
+                                  Specify the value as a positive integer (unit: KiB/s).
+                                format: int32
+                                minimum: 1
+                                type: integer
+                            type: object
+                          outbound:
+                            description: Outbound QoS settings. When specified, average,
+                              peak, and burst must all be provided.
+                            properties:
+                              average:
+                                description: |-
+                                  Average rate in KiB/s.
+                                  Specify the value as a positive integer (unit: KiB/s).
+                                format: int32
+                                minimum: 1
+                                type: integer
+                              burst:
+                                description: |-
+                                  Burst size in KiB.
+                                  Specify the value as a positive integer (unit: KiB).
+                                format: int32
+                                minimum: 1
+                                type: integer
+                              peak:
+                                description: |-
+                                  Peak rate in KiB/s.
+                                  Specify the value as a positive integer (unit: KiB/s).
+                                format: int32
+                                minimum: 1
+                                type: integer
+                            type: object
+                        type: object
                       binding:
                         description: |-
                           Binding specifies the binding plugin that will be used to connect the interface to the guest.
@@ -18999,6 +19173,64 @@ var CRDsValidation map[string]string = map[string]string{
                                   in PCI addresses assigned to the device.
                                   This value is required to be unique across all devices and be between 1 and (16*1024-1).
                                 type: integer
+                              bandwidth:
+                                description: |-
+                                  Bandwidth allows setting QoS limits for the interface.
+                                  When inbound or outbound is configured, average, peak, and burst must all be specified.
+                                properties:
+                                  inbound:
+                                    description: Inbound QoS settings. When specified,
+                                      average, peak, and burst must all be provided.
+                                    properties:
+                                      average:
+                                        description: |-
+                                          Average rate in KiB/s.
+                                          Specify the value as a positive integer (unit: KiB/s).
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
+                                      burst:
+                                        description: |-
+                                          Burst size in KiB.
+                                          Specify the value as a positive integer (unit: KiB).
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
+                                      peak:
+                                        description: |-
+                                          Peak rate in KiB/s.
+                                          Specify the value as a positive integer (unit: KiB/s).
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
+                                    type: object
+                                  outbound:
+                                    description: Outbound QoS settings. When specified,
+                                      average, peak, and burst must all be provided.
+                                    properties:
+                                      average:
+                                        description: |-
+                                          Average rate in KiB/s.
+                                          Specify the value as a positive integer (unit: KiB/s).
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
+                                      burst:
+                                        description: |-
+                                          Burst size in KiB.
+                                          Specify the value as a positive integer (unit: KiB).
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
+                                      peak:
+                                        description: |-
+                                          Peak rate in KiB/s.
+                                          Specify the value as a positive integer (unit: KiB/s).
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
+                                    type: object
+                                type: object
                               binding:
                                 description: |-
                                   Binding specifies the binding plugin that will be used to connect the interface to the guest.
@@ -24106,6 +24338,66 @@ var CRDsValidation map[string]string = map[string]string{
                                           in PCI addresses assigned to the device.
                                           This value is required to be unique across all devices and be between 1 and (16*1024-1).
                                         type: integer
+                                      bandwidth:
+                                        description: |-
+                                          Bandwidth allows setting QoS limits for the interface.
+                                          When inbound or outbound is configured, average, peak, and burst must all be specified.
+                                        properties:
+                                          inbound:
+                                            description: Inbound QoS settings. When
+                                              specified, average, peak, and burst
+                                              must all be provided.
+                                            properties:
+                                              average:
+                                                description: |-
+                                                  Average rate in KiB/s.
+                                                  Specify the value as a positive integer (unit: KiB/s).
+                                                format: int32
+                                                minimum: 1
+                                                type: integer
+                                              burst:
+                                                description: |-
+                                                  Burst size in KiB.
+                                                  Specify the value as a positive integer (unit: KiB).
+                                                format: int32
+                                                minimum: 1
+                                                type: integer
+                                              peak:
+                                                description: |-
+                                                  Peak rate in KiB/s.
+                                                  Specify the value as a positive integer (unit: KiB/s).
+                                                format: int32
+                                                minimum: 1
+                                                type: integer
+                                            type: object
+                                          outbound:
+                                            description: Outbound QoS settings. When
+                                              specified, average, peak, and burst
+                                              must all be provided.
+                                            properties:
+                                              average:
+                                                description: |-
+                                                  Average rate in KiB/s.
+                                                  Specify the value as a positive integer (unit: KiB/s).
+                                                format: int32
+                                                minimum: 1
+                                                type: integer
+                                              burst:
+                                                description: |-
+                                                  Burst size in KiB.
+                                                  Specify the value as a positive integer (unit: KiB).
+                                                format: int32
+                                                minimum: 1
+                                                type: integer
+                                              peak:
+                                                description: |-
+                                                  Peak rate in KiB/s.
+                                                  Specify the value as a positive integer (unit: KiB/s).
+                                                format: int32
+                                                minimum: 1
+                                                type: integer
+                                            type: object
+                                        type: object
                                       binding:
                                         description: |-
                                           Binding specifies the binding plugin that will be used to connect the interface to the guest.
@@ -29684,6 +29976,66 @@ var CRDsValidation map[string]string = map[string]string{
                                               in PCI addresses assigned to the device.
                                               This value is required to be unique across all devices and be between 1 and (16*1024-1).
                                             type: integer
+                                          bandwidth:
+                                            description: |-
+                                              Bandwidth allows setting QoS limits for the interface.
+                                              When inbound or outbound is configured, average, peak, and burst must all be specified.
+                                            properties:
+                                              inbound:
+                                                description: Inbound QoS settings.
+                                                  When specified, average, peak, and
+                                                  burst must all be provided.
+                                                properties:
+                                                  average:
+                                                    description: |-
+                                                      Average rate in KiB/s.
+                                                      Specify the value as a positive integer (unit: KiB/s).
+                                                    format: int32
+                                                    minimum: 1
+                                                    type: integer
+                                                  burst:
+                                                    description: |-
+                                                      Burst size in KiB.
+                                                      Specify the value as a positive integer (unit: KiB).
+                                                    format: int32
+                                                    minimum: 1
+                                                    type: integer
+                                                  peak:
+                                                    description: |-
+                                                      Peak rate in KiB/s.
+                                                      Specify the value as a positive integer (unit: KiB/s).
+                                                    format: int32
+                                                    minimum: 1
+                                                    type: integer
+                                                type: object
+                                              outbound:
+                                                description: Outbound QoS settings.
+                                                  When specified, average, peak, and
+                                                  burst must all be provided.
+                                                properties:
+                                                  average:
+                                                    description: |-
+                                                      Average rate in KiB/s.
+                                                      Specify the value as a positive integer (unit: KiB/s).
+                                                    format: int32
+                                                    minimum: 1
+                                                    type: integer
+                                                  burst:
+                                                    description: |-
+                                                      Burst size in KiB.
+                                                      Specify the value as a positive integer (unit: KiB).
+                                                    format: int32
+                                                    minimum: 1
+                                                    type: integer
+                                                  peak:
+                                                    description: |-
+                                                      Peak rate in KiB/s.
+                                                      Specify the value as a positive integer (unit: KiB/s).
+                                                    format: int32
+                                                    minimum: 1
+                                                    type: integer
+                                                type: object
+                                            type: object
                                           binding:
                                             description: |-
                                               Binding specifies the binding plugin that will be used to connect the interface to the guest.
