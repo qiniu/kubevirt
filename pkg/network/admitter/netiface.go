@@ -35,6 +35,9 @@ import (
 	v1 "kubevirt.io/api/core/v1"
 )
 
+// maxBurstBytes is the hard upper limit enforced by libvirt for bandwidth burst parameter.
+const maxBurstBytes = 4194303
+
 func validateNetworksAssignedToInterfaces(field *k8sfield.Path, spec *v1.VirtualMachineInstanceSpec) []metav1.StatusCause {
 	var causes []metav1.StatusCause
 	const nameOfTypeNotFoundMessagePattern = "%s '%s' not found."
@@ -162,6 +165,14 @@ func validateBandwidth(field *k8sfield.Path, idx int, iface v1.Interface) []meta
 		requireQuantity(params.Average, "average")
 		requireQuantity(params.Peak, "peak")
 		requireQuantity(params.Burst, "burst")
+
+		if params.Burst != nil && *params.Burst > maxBurstBytes {
+			causes = append(causes, metav1.StatusCause{
+				Type:    metav1.CauseTypeFieldValueInvalid,
+				Message: fmt.Sprintf("bandwidth %s burst value %d exceeds maximum allowed value %d", direction, *params.Burst, maxBurstBytes),
+				Field:   field.Child("domain", "devices", "interfaces").Index(idx).Child("bandwidth", direction, "burst").String(),
+			})
+		}
 	}
 
 	validateParams(iface.Bandwidth.Inbound, "inbound")
