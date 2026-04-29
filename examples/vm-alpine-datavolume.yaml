@@ -19,7 +19,7 @@ spec:
         storageClassName: local
       source:
         registry:
-          url: docker://icoy/alpine-container-disk-demo:dev
+          url: docker://registry:5000/kubevirt/alpine-container-disk-demo:devel
   runStrategy: Halted
   template:
     metadata:
