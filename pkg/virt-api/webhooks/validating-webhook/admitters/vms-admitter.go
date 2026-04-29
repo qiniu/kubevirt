@@ -146,6 +146,11 @@ func (admitter *VMsAdmitter) Admit(ctx context.Context, ar *admissionv1.Admissio
 		}
 	}
 
+	// Validate network fields (including bandwidth) on all operations
+	if causes = netadmitter.Validate(k8sfield.NewPath("spec"), &vmCopy.Spec.Template.Spec, admitter.ClusterConfig); len(causes) > 0 {
+		return webhookutils.ToAdmissionResponse(causes)
+	}
+
 	_, isKubeVirtServiceAccount := admitter.KubeVirtServiceAccounts[ar.Request.UserInfo.Username]
 	causes = ValidateVirtualMachineSpec(k8sfield.NewPath("spec"), &vmCopy.Spec, admitter.ClusterConfig, isKubeVirtServiceAccount)
 	if len(causes) > 0 {

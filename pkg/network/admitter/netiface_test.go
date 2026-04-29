@@ -428,6 +428,59 @@ var _ = Describe("Validating VMI network spec", func() {
 		}))
 	})
 
+	It("should reject bandwidth burst exceeding libvirt maximum", func() {
+		spec := &v1.VirtualMachineInstanceSpec{}
+		spec.Domain.Devices.Interfaces = []v1.Interface{*v1.DefaultMasqueradeNetworkInterface()}
+		spec.Domain.Devices.Interfaces[0].Bandwidth = &v1.Bandwidth{
+			Inbound: &v1.BandwidthParams{
+				Average: pointer.P(uint32(10240)),
+				Peak:    pointer.P(uint32(20480)),
+				Burst:   pointer.P(uint32(4194304)),
+			},
+			Outbound: &v1.BandwidthParams{
+				Average: pointer.P(uint32(10240)),
+				Peak:    pointer.P(uint32(20480)),
+				Burst:   pointer.P(uint32(4194304)),
+			},
+		}
+		spec.Networks = []v1.Network{*v1.DefaultPodNetwork()}
+
+		validator := admitter.NewValidator(k8sfield.NewPath("fake"), spec, stubClusterConfigChecker{})
+		Expect(validator.Validate()).To(ConsistOf(
+			metav1.StatusCause{
+				Type:    "FieldValueInvalid",
+				Message: "bandwidth inbound burst value 4194304 exceeds maximum allowed value 4194303",
+				Field:   "fake.domain.devices.interfaces[0].bandwidth.inbound.burst",
+			},
+			metav1.StatusCause{
+				Type:    "FieldValueInvalid",
+				Message: "bandwidth outbound burst value 4194304 exceeds maximum allowed value 4194303",
+				Field:   "fake.domain.devices.interfaces[0].bandwidth.outbound.burst",
+			},
+		))
+	})
+
+	It("should accept bandwidth burst at exactly the libvirt maximum", func() {
+		spec := &v1.VirtualMachineInstanceSpec{}
+		spec.Domain.Devices.Interfaces = []v1.Interface{*v1.DefaultMasqueradeNetworkInterface()}
+		spec.Domain.Devices.Interfaces[0].Bandwidth = &v1.Bandwidth{
+			Inbound: &v1.BandwidthParams{
+				Average: pointer.P(uint32(10240)),
+				Peak:    pointer.P(uint32(20480)),
+				Burst:   pointer.P(uint32(4194303)),
+			},
+			Outbound: &v1.BandwidthParams{
+				Average: pointer.P(uint32(10240)),
+				Peak:    pointer.P(uint32(20480)),
+				Burst:   pointer.P(uint32(4194303)),
+			},
+		}
+		spec.Networks = []v1.Network{*v1.DefaultPodNetwork()}
+
+		validator := admitter.NewValidator(k8sfield.NewPath("fake"), spec, stubClusterConfigChecker{})
+		Expect(validator.Validate()).To(BeEmpty())
+	})
+
 	It("should reject zero bandwidth values", func() {
 		spec := &v1.VirtualMachineInstanceSpec{}
 		spec.Domain.Devices.Interfaces = []v1.Interface{*v1.DefaultMasqueradeNetworkInterface()}
