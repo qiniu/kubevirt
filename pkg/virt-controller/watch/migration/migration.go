@@ -85,11 +85,6 @@ const vmiPodIndex = "vmiPodIndex"
 // a pending unschedulable state.
 const defaultUnschedulablePendingTimeoutSeconds = int64(60 * 5)
 
-// This is how many finalized migration objects left in
-// the system before we begin garbage collecting the oldest
-// migration objects
-const defaultFinalizedMigrationGarbageCollectionBuffer = 5
-
 // This catch-all timeout is used when a target pod is stuck in
 // the pending phase for any reason. The theory behind this timeout
 // being longer than the unschedulable timeout is that we don't necessarily
@@ -2277,8 +2272,9 @@ func (c *Controller) garbageCollectFinalizedMigrations(vmi *virtv1.VirtualMachin
 		}
 	}
 
-	// only keep the most recent 5 finalized migration objects
-	garbageCollectionCount := len(finalizedMigrations) - defaultFinalizedMigrationGarbageCollectionBuffer
+	// Keep the configured number of recent finalized migration objects and their launcher pods.
+	garbageCollectionBuffer := int(*c.clusterConfig.GetMigrationConfiguration().FinalizedMigrationGarbageCollectionBuffer)
+	garbageCollectionCount := len(finalizedMigrations) - garbageCollectionBuffer
 
 	if garbageCollectionCount <= 0 {
 		return nil

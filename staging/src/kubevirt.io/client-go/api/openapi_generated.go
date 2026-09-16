@@ -23998,6 +23998,13 @@ func schema_kubevirtio_api_core_v1_MigrationConfiguration(ref common.ReferenceCa
 							Format:      "int64",
 						},
 					},
+					"finalizedMigrationGarbageCollectionBuffer": {
+						SchemaProps: spec.SchemaProps{
+							Description: "FinalizedMigrationGarbageCollectionBuffer is the number of most recent finalized migrations to retain per VMI together with their launcher pods. Set to 0 to clean them up immediately. Defaults to 5",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
 					"allowAutoConverge": {
 						SchemaProps: spec.SchemaProps{
 							Description: "AllowAutoConverge allows the platform to compromise performance/availability of VMIs to guarantee successful VMI live migrations. Defaults to false",

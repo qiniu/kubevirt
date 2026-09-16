@@ -161,6 +161,7 @@ func (c *ClusterConfig) crdUpdated(_, cur interface{}) {
 func defaultClusterConfig(cpuArch string) *v1.KubeVirtConfiguration {
 	parallelOutboundMigrationsPerNodeDefault := ParallelOutboundMigrationsPerNodeDefault
 	parallelMigrationsPerClusterDefault := ParallelMigrationsPerClusterDefault
+	finalizedMigrationGarbageCollectionBufferDefault := FinalizedMigrationGarbageCollectionBufferDefault
 	bandwidthPerMigrationDefault := resource.MustParse(BandwidthPerMigrationDefault)
 	nodeDrainTaintDefaultKey := NodeDrainTaintDefaultKey
 	allowAutoConverge := MigrationAllowAutoConverge
@@ -204,16 +205,17 @@ func defaultClusterConfig(cpuArch string) *v1.KubeVirtConfiguration {
 		},
 		EvictionStrategy: &defaultEvictionStrategy,
 		MigrationConfiguration: &v1.MigrationConfiguration{
-			ParallelMigrationsPerCluster:      &parallelMigrationsPerClusterDefault,
-			ParallelOutboundMigrationsPerNode: &parallelOutboundMigrationsPerNodeDefault,
-			NodeDrainTaintKey:                 &nodeDrainTaintDefaultKey,
-			BandwidthPerMigration:             &bandwidthPerMigrationDefault,
-			ProgressTimeout:                   &progressTimeout,
-			CompletionTimeoutPerGiB:           &completionTimeoutPerGiB,
-			UtilityVolumesTimeout:             &utilityVolumesTimeout,
-			UnsafeMigrationOverride:           &defaultUnsafeMigrationOverride,
-			AllowAutoConverge:                 &allowAutoConverge,
-			AllowPostCopy:                     &allowPostCopy,
+			ParallelMigrationsPerCluster:              &parallelMigrationsPerClusterDefault,
+			ParallelOutboundMigrationsPerNode:         &parallelOutboundMigrationsPerNodeDefault,
+			FinalizedMigrationGarbageCollectionBuffer: &finalizedMigrationGarbageCollectionBufferDefault,
+			NodeDrainTaintKey:                         &nodeDrainTaintDefaultKey,
+			BandwidthPerMigration:                     &bandwidthPerMigrationDefault,
+			ProgressTimeout:                           &progressTimeout,
+			CompletionTimeoutPerGiB:                   &completionTimeoutPerGiB,
+			UtilityVolumesTimeout:                     &utilityVolumesTimeout,
+			UnsafeMigrationOverride:                   &defaultUnsafeMigrationOverride,
+			AllowAutoConverge:                         &allowAutoConverge,
+			AllowPostCopy:                             &allowPostCopy,
 		},
 		CPURequest: &cpuRequestDefault,
 		NetworkConfiguration: &v1.NetworkConfiguration{

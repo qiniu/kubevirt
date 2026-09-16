@@ -3515,6 +3515,11 @@ func (in *MigrationConfiguration) DeepCopyInto(out *MigrationConfiguration) {
 		*out = new(uint32)
 		**out = **in
 	}
+	if in.FinalizedMigrationGarbageCollectionBuffer != nil {
+		in, out := &in.FinalizedMigrationGarbageCollectionBuffer, &out.FinalizedMigrationGarbageCollectionBuffer
+		*out = new(uint32)
+		**out = **in
+	}
 	if in.AllowAutoConverge != nil {
 		in, out := &in.AllowAutoConverge, &out.AllowAutoConverge
 		*out = new(bool)

@@ -34,6 +34,9 @@ import (
 	"kubevirt.io/kubevirt/pkg/virt-config/featuregate"
 )
 
+// FinalizedMigrationGarbageCollectionBufferDefault is the default number of finalized migrations retained per VMI.
+const FinalizedMigrationGarbageCollectionBufferDefault uint32 = 5
+
 const (
 	ParallelOutboundMigrationsPerNodeDefault uint32 = 2
 	ParallelMigrationsPerClusterDefault      uint32 = 5

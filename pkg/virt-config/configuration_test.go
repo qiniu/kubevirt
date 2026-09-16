@@ -351,24 +351,27 @@ var _ = Describe("test configuration", func() {
 
 		parallelOutboundMigrationsPerNode := uint32(10)
 		parallelMigrationsPerCluster := uint32(20)
+		finalizedMigrationGarbageCollectionBuffer := uint32(3)
 		bandwidthPerMigration := resource.MustParse("110Mi")
 		progressTimeout := int64(5)
 		completionTimeoutPerGiB := int64(5)
 		clusterConfig, _, _ := testutils.NewFakeClusterConfigUsingKVConfig(&v1.KubeVirtConfiguration{
 			MigrationConfiguration: &v1.MigrationConfiguration{
-				ParallelOutboundMigrationsPerNode: &parallelOutboundMigrationsPerNode,
-				ParallelMigrationsPerCluster:      &parallelMigrationsPerCluster,
-				BandwidthPerMigration:             &bandwidthPerMigration,
-				ProgressTimeout:                   &progressTimeout,
-				CompletionTimeoutPerGiB:           &completionTimeoutPerGiB,
-				UnsafeMigrationOverride:           &trueValue,
-				AllowAutoConverge:                 &trueValue,
+				ParallelOutboundMigrationsPerNode:         &parallelOutboundMigrationsPerNode,
+				ParallelMigrationsPerCluster:              &parallelMigrationsPerCluster,
+				FinalizedMigrationGarbageCollectionBuffer: &finalizedMigrationGarbageCollectionBuffer,
+				BandwidthPerMigration:                     &bandwidthPerMigration,
+				ProgressTimeout:                           &progressTimeout,
+				CompletionTimeoutPerGiB:                   &completionTimeoutPerGiB,
+				UnsafeMigrationOverride:                   &trueValue,
+				AllowAutoConverge:                         &trueValue,
 			},
 		})
 
 		result := clusterConfig.GetMigrationConfiguration()
 		Expect(*result.ParallelOutboundMigrationsPerNode).To(BeNumerically("==", 10))
 		Expect(*result.ParallelMigrationsPerCluster).To(BeNumerically("==", 20))
+		Expect(*result.FinalizedMigrationGarbageCollectionBuffer).To(BeNumerically("==", 3))
 		bandwidth := *result.BandwidthPerMigration
 		Expect(bandwidth.String()).To(Equal("110Mi"))
 		Expect(*result.ProgressTimeout).To(BeNumerically("==", 5))
@@ -388,6 +391,7 @@ var _ = Describe("test configuration", func() {
 		result := clusterConfig.GetMigrationConfiguration()
 		Expect(*result.ParallelOutboundMigrationsPerNode).To(BeNumerically("==", 10))
 		Expect(*result.ParallelMigrationsPerCluster).To(BeNumerically("==", 5))
+		Expect(*result.FinalizedMigrationGarbageCollectionBuffer).To(BeNumerically("==", virtconfig.FinalizedMigrationGarbageCollectionBufferDefault))
 		Expect(result.BandwidthPerMigration.String()).To(Equal("0"))
 	})
 
