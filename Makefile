@@ -231,7 +231,7 @@ fmt: format
 
 lint:
 	hack/dockerized "hack/lint-test-cleanup-label.sh"
-	hack/dockerized "hack/golangci-lint.sh"
+	hack/dockerized "GOLANGCI_LINT_NEW_FROM_REV=${GOLANGCI_LINT_NEW_FROM_REV} hack/golangci-lint.sh"
 	hack/dockerized "monitoringlinter ./pkg/..."
 	hack/dockerized "hack/license-header-check.sh"
 

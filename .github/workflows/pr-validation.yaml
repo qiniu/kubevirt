@@ -25,6 +25,8 @@ jobs:
           fetch-depth: 0
 
       - name: Run linters
+        env:
+          GOLANGCI_LINT_NEW_FROM_REV: ${{ github.event.pull_request.base.sha }}
         run: make lint
 
       - name: Verify generated files
