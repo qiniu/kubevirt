@@ -1385,14 +1385,6 @@ var CRDsValidation map[string]string = map[string]string{
                     When set to true, DisableTLS will disable the additional layer of live migration encryption
                     provided by KubeVirt. This is usually a bad idea. Defaults to false
                   type: boolean
-                finalizedMigrationGarbageCollectionBuffer:
-                  description: |-
-                    FinalizedMigrationGarbageCollectionBuffer is the number of most recent finalized migrations
-                    to retain per VMI together with their launcher pods. Set to 0 to clean them up immediately.
-                    Defaults to 5
-                  format: int32
-                  minimum: 0
-                  type: integer
                 matchSELinuxLevelOnMigration:
                   description: |-
                     By default, the SELinux level of target virt-launcher pods is forced to the level of the source virt-launcher.
@@ -15132,14 +15124,6 @@ var CRDsValidation map[string]string = map[string]string{
                     When set to true, DisableTLS will disable the additional layer of live migration encryption
                     provided by KubeVirt. This is usually a bad idea. Defaults to false
                   type: boolean
-                finalizedMigrationGarbageCollectionBuffer:
-                  description: |-
-                    FinalizedMigrationGarbageCollectionBuffer is the number of most recent finalized migrations
-                    to retain per VMI together with their launcher pods. Set to 0 to clean them up immediately.
-                    Defaults to 5
-                  format: int32
-                  minimum: 0
-                  type: integer
                 matchSELinuxLevelOnMigration:
                   description: |-
                     By default, the SELinux level of target virt-launcher pods is forced to the level of the source virt-launcher.
@@ -15741,14 +15725,6 @@ var CRDsValidation map[string]string = map[string]string{
                     When set to true, DisableTLS will disable the additional layer of live migration encryption
                     provided by KubeVirt. This is usually a bad idea. Defaults to false
                   type: boolean
-                finalizedMigrationGarbageCollectionBuffer:
-                  description: |-
-                    FinalizedMigrationGarbageCollectionBuffer is the number of most recent finalized migrations
-                    to retain per VMI together with their launcher pods. Set to 0 to clean them up immediately.
-                    Defaults to 5
-                  format: int32
-                  minimum: 0
-                  type: integer
                 matchSELinuxLevelOnMigration:
                   description: |-
                     By default, the SELinux level of target virt-launcher pods is forced to the level of the source virt-launcher.

@@ -1464,7 +1464,7 @@ var _ = Describe("Migration watcher", func() {
 			})
 			Expect(err).ToNot(HaveOccurred())
 			if keyMigration.IsFinal() {
-				Expect(migrationsStored.Items).To(HaveLen(int(virtconfig.FinalizedMigrationGarbageCollectionBufferDefault)))
+				Expect(migrationsStored.Items).To(HaveLen(defaultFinalizedMigrationGarbageCollectionBuffer))
 			} else {
 				Expect(migrationsStored.Items).To(HaveLen(len(phasesToGarbageCollect) * 10))
 			}
@@ -1554,43 +1554,6 @@ var _ = Describe("Migration watcher", func() {
 				}
 				return podNames // No sort needed
 			}, ConsistOf("target-mig-0", "source-mig-1", "source-mig-2", "target-mig-2")))
-		})
-
-		It("should garbage collect a finalized migration immediately when the buffer is zero", func() {
-			setConfig(&v1.KubeVirtConfiguration{
-				MigrationConfiguration: &v1.MigrationConfiguration{
-					FinalizedMigrationGarbageCollectionBuffer: pointer.P(uint32(0)),
-				},
-			})
-			vmi := newVirtualMachine("testvmi", v1.Running)
-			addVirtualMachineInstance(vmi)
-
-			migration := newMigration("finalized-migration", vmi.Name, v1.MigrationSucceeded)
-			migration.Status.MigrationState = &v1.VirtualMachineInstanceMigrationState{
-				Completed: true,
-				SourcePod: "source-pod",
-				TargetPod: "target-pod",
-			}
-			Expect(controller.migrationIndexer.Add(migration)).To(Succeed())
-			_, err := virtClientset.KubevirtV1().VirtualMachineInstanceMigrations(vmi.Namespace).Create(context.Background(), migration, metav1.CreateOptions{})
-			Expect(err).ToNot(HaveOccurred())
-			createPod("source-pod", vmi.Namespace)
-			createPod("target-pod", vmi.Namespace)
-
-			Expect(controller.garbageCollectFinalizedMigrations(vmi)).To(Succeed())
-
-			migrationList, err := virtClientset.KubevirtV1().VirtualMachineInstanceMigrations(vmi.Namespace).List(context.Background(), metav1.ListOptions{})
-			Expect(err).ToNot(HaveOccurred())
-			Expect(migrationList.Items).To(BeEmpty())
-			podList, err := kubeClient.CoreV1().Pods(vmi.Namespace).List(context.Background(), metav1.ListOptions{})
-			Expect(err).ToNot(HaveOccurred())
-			Expect(podList.Items).To(WithTransform(func(pods []k8sv1.Pod) []string {
-				var podNames []string
-				for _, pod := range pods {
-					podNames = append(podNames, pod.Name)
-				}
-				return podNames
-			}, ConsistOf("target-pod")))
 		})
 
 		It("should handle errors during garbage collection deletions", func() {

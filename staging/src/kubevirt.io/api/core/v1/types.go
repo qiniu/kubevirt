@@ -3313,11 +3313,6 @@ type MigrationConfiguration struct {
 	// ParallelMigrationsPerCluster is the total number of concurrent live migrations
 	// allowed cluster-wide. Defaults to 5
 	ParallelMigrationsPerCluster *uint32 `json:"parallelMigrationsPerCluster,omitempty"`
-	// FinalizedMigrationGarbageCollectionBuffer is the number of most recent finalized migrations
-	// to retain per VMI together with their launcher pods. Set to 0 to clean them up immediately.
-	// Defaults to 5
-	// +kubebuilder:validation:Minimum=0
-	FinalizedMigrationGarbageCollectionBuffer *uint32 `json:"finalizedMigrationGarbageCollectionBuffer,omitempty"`
 	// AllowAutoConverge allows the platform to compromise performance/availability of VMIs to
 	// guarantee successful VMI live migrations. Defaults to false
 	AllowAutoConverge *bool `json:"allowAutoConverge,omitempty"`
