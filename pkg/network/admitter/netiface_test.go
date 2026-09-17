@@ -487,6 +487,8 @@ var _ = Describe("Validating VMI network spec", func() {
 		spec.Domain.Devices.Interfaces[0].Bandwidth = &v1.Bandwidth{
 			Inbound: &v1.BandwidthParams{
 				Average: pointer.P(uint32(0)),
+				Peak:    pointer.P(uint32(128)),
+				Burst:   pointer.P(uint32(256)),
 			},
 		}
 		spec.Networks = []v1.Network{*v1.DefaultPodNetwork()}

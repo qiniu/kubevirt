@@ -36,4 +36,6 @@ jobs:
         run: make && make build-verify
 
       - name: Run unit tests
+        env:
+          KUBEVIRT_GIT_VERSION: v0.0.0
         run: make test
