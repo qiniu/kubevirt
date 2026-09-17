@@ -1,0 +1,37 @@
+name: Pull request validation
+
+on:
+  pull_request:
+    branches:
+      - 7niu-release-1.8
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-validation-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Run linters
+        run: make lint
+
+      - name: Verify generated files
+        run: make generate-verify
+
+      - name: Build and verify
+        run: make && make build-verify
+
+      - name: Run unit tests
+        run: make test
