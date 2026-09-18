@@ -45,7 +45,7 @@ bazel-push-images:
 push: bazel-push-images
 
 bazel-test:
-	hack/dockerized "hack/bazel-fmt.sh && CI=${CI} ARTIFACTS=${ARTIFACTS} WHAT=${WHAT}  hack/bazel-test.sh"
+	hack/dockerized "export KUBEVIRT_GIT_VERSION=${KUBEVIRT_GIT_VERSION} && hack/bazel-fmt.sh && CI=${CI} ARTIFACTS=${ARTIFACTS} WHAT='${WHAT}' hack/bazel-test.sh"
 
 gen-proto:
 	hack/dockerized "DOCKER_PREFIX=${DOCKER_PREFIX} DOCKER_TAG=${DOCKER_TAG} IMAGE_PULL_POLICY=${IMAGE_PULL_POLICY} VERBOSITY=${VERBOSITY} ./hack/gen-proto.sh"
@@ -231,7 +231,7 @@ fmt: format
 
 lint:
 	hack/dockerized "hack/lint-test-cleanup-label.sh"
-	hack/dockerized "hack/golangci-lint.sh"
+	hack/dockerized "GOLANGCI_LINT_NEW_FROM_REV=${GOLANGCI_LINT_NEW_FROM_REV} hack/golangci-lint.sh"
 	hack/dockerized "monitoringlinter ./pkg/..."
 	hack/dockerized "hack/license-header-check.sh"
 

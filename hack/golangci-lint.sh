@@ -25,7 +25,12 @@ while IFS= read -r line; do
     paths+="${line}/... "
 done <hack/linter/lint-paths.txt
 
-golangci-lint run --timeout 20m --verbose ${paths}
-golangci-lint run --default=none --enable=ginkgolinter --timeout 10m --verbose --no-config \
+diff_args=()
+if [[ -n "${GOLANGCI_LINT_NEW_FROM_REV:-}" ]]; then
+    diff_args+=(--new-from-rev "${GOLANGCI_LINT_NEW_FROM_REV}")
+fi
+
+golangci-lint run --timeout 20m --verbose "${diff_args[@]}" ${paths}
+golangci-lint run --default=none --enable=ginkgolinter --timeout 10m --verbose "${diff_args[@]}" --no-config \
     ./pkg/... \
     ./tests/...
