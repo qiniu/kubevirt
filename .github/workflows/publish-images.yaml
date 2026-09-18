@@ -53,6 +53,26 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          release_assets=(
+            _out/manifests/release/demo-content.yaml
+            _out/manifests/release/kubevirt-operator.yaml
+            _out/manifests/release/kubevirt-cr.yaml
+            _out/manifests/release/kubevirt-network-policies.yaml
+            _out/manifests/release/olm/kubevirt-operatorsource.yaml
+            "_out/manifests/release/olm/bundle/kubevirtoperator.${GITHUB_REF_NAME}.clusterserviceversion.yaml"
+            _out/manifests/release/conformance.yaml
+            _out/manifests/testing/disks-images-provider.yaml
+            _out/manifests/testing/rbac-for-testing.yaml
+            _out/manifests/testing/uploadproxy-nodeport.yaml
+          )
+
+          for asset in "${release_assets[@]}"; do
+            if [[ ! -s "$asset" ]]; then
+              echo "::error file=$asset::Release asset is missing or empty"
+              exit 1
+            fi
+          done
+
           if ! gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             git show "$GITHUB_REF_NAME" --format=format:%n > /tmp/tag_notes
             gh release create "$GITHUB_REF_NAME" \
@@ -65,11 +85,4 @@ jobs:
           gh release upload "$GITHUB_REF_NAME" \
             --repo "$GITHUB_REPOSITORY" \
             --clobber \
-            _out/manifests/release/demo-content.yaml \
-            _out/manifests/release/kubevirt-operator.yaml \
-            _out/manifests/release/kubevirt-cr.yaml \
-            _out/manifests/release/kubevirt-network-policies.yaml \
-            _out/manifests/release/olm/kubevirt-operatorsource.yaml \
-            "_out/manifests/release/olm/bundle/kubevirtoperator.${GITHUB_REF_NAME}.clusterserviceversion.yaml" \
-            _out/manifests/release/conformance.yaml \
-            _out/manifests/testing/*
+            "${release_assets[@]}"
