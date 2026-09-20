@@ -2273,19 +2273,42 @@ func (c *Controller) garbageCollectFinalizedMigrations(vmi *virtv1.VirtualMachin
 	sort.Sort(vmimCollection(migrations))
 	for _, migration := range migrations {
 		if migration.IsFinal() && migration.DeletionTimestamp == nil {
+			// updateStatus writes the finalized VMI migration state before the informer
+			// cache observes it. Wait for the cache so pod cleanup is not skipped before
+			// the migration object is deleted.
+			if vmi.IsMigrationSynchronized(migration) &&
+				migration.UID == vmi.Status.MigrationState.MigrationUID &&
+				!equality.Semantic.DeepEqual(migration.Status.MigrationState, vmi.Status.MigrationState) {
+				continue
+			}
 			finalizedMigrations = append(finalizedMigrations, migration)
 		}
 	}
 
-	// only keep the most recent 5 finalized migration objects
-	garbageCollectionCount := len(finalizedMigrations) - defaultFinalizedMigrationGarbageCollectionBuffer
+	var migrationsToGarbageCollect []*virtv1.VirtualMachineInstanceMigration
+	historyLimits := c.clusterConfig.GetMigrationConfiguration().HistoryLimits
+	if historyLimits == nil {
+		migrationsToGarbageCollect = migrationsOverLimit(finalizedMigrations, defaultFinalizedMigrationGarbageCollectionBuffer)
+	} else {
+		var successfulMigrations []*virtv1.VirtualMachineInstanceMigration
+		var failedMigrations []*virtv1.VirtualMachineInstanceMigration
+		for _, migration := range finalizedMigrations {
+			switch migration.Status.Phase {
+			case virtv1.MigrationSucceeded:
+				successfulMigrations = append(successfulMigrations, migration)
+			case virtv1.MigrationFailed:
+				failedMigrations = append(failedMigrations, migration)
+			}
+		}
+		migrationsToGarbageCollect = append(migrationsToGarbageCollect, migrationsOverLimit(successfulMigrations, historyLimits.Successful)...)
+		migrationsToGarbageCollect = append(migrationsToGarbageCollect, migrationsOverLimit(failedMigrations, historyLimits.Failed)...)
+	}
 
-	if garbageCollectionCount <= 0 {
+	if len(migrationsToGarbageCollect) == 0 {
 		return nil
 	}
 
-	for i := range garbageCollectionCount {
-		mig := finalizedMigrations[i]
+	for _, mig := range migrationsToGarbageCollect {
 		oldPodName := ""
 		if mig.Status.MigrationState != nil {
 			// If the migration is a failed one, also garbage-collect its defunct target pod
@@ -2324,6 +2347,13 @@ func (c *Controller) garbageCollectFinalizedMigrations(vmi *virtv1.VirtualMachin
 	}
 
 	return nil
+}
+
+func migrationsOverLimit(migrations []*virtv1.VirtualMachineInstanceMigration, limit uint32) []*virtv1.VirtualMachineInstanceMigration {
+	if uint64(len(migrations)) <= uint64(limit) {
+		return nil
+	}
+	return migrations[:len(migrations)-int(limit)]
 }
 
 // takes a namespace and returns all migrations listening for this vmi
