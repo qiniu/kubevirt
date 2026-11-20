@@ -382,7 +382,10 @@ var _ = Describe("interface link state update", func() {
 		),
 	)
 
-	It("updates the domain interface when only bandwidth changes", func() {
+	// Bandwidth lives outside the domain XML now: virt-handler applies it with tc.
+	// A session-mode libvirt rejects <bandwidth>, so pushing it here used to wedge
+	// the domain in a sync error loop.
+	It("ignores bandwidth differences", func() {
 		domainFrom := newDomain(api.Interface{
 			Alias:     api.NewUserDefinedAlias(defaultNet),
 			Source:    api.InterfaceSource{},
@@ -397,7 +400,7 @@ var _ = Describe("interface link state update", func() {
 		})
 
 		networkInterfaceManager := newVirtIOInterfaceManager(
-			expectUpdateDevice(domainTo.Spec.Devices.Interfaces[0])(gomock.NewController(GinkgoT())).VirtDomain,
+			expectUpdateDeviceNotCalled(gomock.NewController(GinkgoT())).VirtDomain,
 			&fakeVMConfigurator{},
 		)
 
@@ -435,16 +438,6 @@ func expectUpdateDeviceNotCalled(mockController *gomock.Controller) *testing.Lib
 	mockClient.DomainEXPECT().UpdateDeviceFlags(gomock.Any(), gomock.Any()).Times(0).Return(nil)
 
 	return mockClient
-}
-
-func expectUpdateDevice(domainIface api.Interface) func(*gomock.Controller) *testing.Libvirt {
-	return func(mockController *gomock.Controller) *testing.Libvirt {
-		mockClient := testing.NewLibvirt(mockController)
-		ifaceXML, err := xml.Marshal(domainIface)
-		Expect(err).NotTo(HaveOccurred())
-		mockClient.DomainEXPECT().UpdateDeviceFlags(string(ifaceXML), gomock.Any()).Times(1).Return(nil)
-		return mockClient
-	}
 }
 
 func expectUpdateDeviceLinkStateDown(mockController *gomock.Controller) *testing.Libvirt {

@@ -4345,12 +4345,12 @@ var _ = Describe("Template", func() {
 		},
 			Entry("on a root virt-launcher", func() *v1.VirtualMachineInstance {
 				return api.NewMinimalVMI("fake-vmi")
-			}, "compute", []k8sv1.Capability{CAP_NET_BIND_SERVICE, CAP_SYS_NICE, CAP_NET_ADMIN}, nil),
+			}, "compute", []k8sv1.Capability{CAP_NET_BIND_SERVICE, CAP_SYS_NICE}, nil),
 			Entry("on a non-root virt-launcher", func() *v1.VirtualMachineInstance {
 				vmi := api.NewMinimalVMI("fake-vmi")
 				vmi.Status.RuntimeUser = uint64(nonRootUser)
 				return vmi
-			}, "compute", []k8sv1.Capability{CAP_NET_BIND_SERVICE, CAP_NET_ADMIN}, []k8sv1.Capability{"ALL"}),
+			}, "compute", []k8sv1.Capability{CAP_NET_BIND_SERVICE}, []k8sv1.Capability{"ALL"}),
 			Entry("on a sidecar container", func() *v1.VirtualMachineInstance {
 				vmi := api.NewMinimalVMI("fake-vmi")
 				vmi.Status.RuntimeUser = uint64(nonRootUser)
