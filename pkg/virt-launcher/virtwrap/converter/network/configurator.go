@@ -116,16 +116,6 @@ func (d DomainConfigurator) configureInterface(iface *v1.Interface, vmi *v1.Virt
 		builderOptions = append(builderOptions, withMACAddress(iface.MacAddress))
 	}
 
-	if iface.Bandwidth != nil {
-		libvirtBandwidth := &api.BandWidth{
-			Inbound:  convertBandwidthParams(iface.Bandwidth.Inbound),
-			Outbound: convertBandwidthParams(iface.Bandwidth.Outbound),
-		}
-		if libvirtBandwidth.Inbound != nil || libvirtBandwidth.Outbound != nil {
-			builderOptions = append(builderOptions, withBandwidth(libvirtBandwidth))
-		}
-	}
-
 	switch {
 	case d.domainAttachmentByInterfaceName[iface.Name] == string(v1.Tap):
 		builderOptions = append(builderOptions, d.tapBindingOptions(iface, useLaunchSecurity)...)
@@ -203,38 +193,6 @@ func WithVirtioModel(virtioModel string) option {
 	return func(d *DomainConfigurator) {
 		d.virtioModel = virtioModel
 	}
-}
-
-func bandwidthValueToLibvirtKiB(value *uint32) uint {
-	if value == nil {
-		return 0
-	}
-
-	if *value == 0 {
-		return 0
-	}
-
-	return uint(*value)
-}
-
-func convertBandwidthParams(k8sParams *v1.BandwidthParams) *api.BandwidthParams {
-	if k8sParams == nil {
-		return nil
-	}
-
-	libvirtParams := &api.BandwidthParams{}
-
-	if k8sParams.Average != nil {
-		libvirtParams.Average = bandwidthValueToLibvirtKiB(k8sParams.Average)
-	}
-	if k8sParams.Peak != nil {
-		libvirtParams.Peak = bandwidthValueToLibvirtKiB(k8sParams.Peak)
-	}
-	if k8sParams.Burst != nil {
-		libvirtParams.Burst = bandwidthValueToLibvirtKiB(k8sParams.Burst)
-	}
-
-	return libvirtParams
 }
 
 func getInterfaceType(iface *v1.Interface) string {

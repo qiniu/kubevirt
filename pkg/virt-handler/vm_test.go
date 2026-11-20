@@ -3212,8 +3212,9 @@ func NewScheduledVMI(vmiUID types.UID, podUID types.UID, hostname string) *v1.Vi
 }
 
 type netConfStub struct {
-	vmiUID     types.UID
-	SetupError error
+	vmiUID             types.UID
+	SetupError         error
+	SyncBandwidthError error
 }
 
 func (nc *netConfStub) Setup(_ *v1.VirtualMachineInstance, _ []v1.Network, _ int) error {
@@ -3221,6 +3222,10 @@ func (nc *netConfStub) Setup(_ *v1.VirtualMachineInstance, _ []v1.Network, _ int
 		return nc.SetupError
 	}
 	return nil
+}
+
+func (nc *netConfStub) SyncBandwidth(_ *v1.VirtualMachineInstance, _ int) error {
+	return nc.SyncBandwidthError
 }
 
 func (nc *netConfStub) Teardown(_ *v1.VirtualMachineInstance) error {

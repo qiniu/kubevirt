@@ -6,6 +6,7 @@ go_library(
         "ip.go",
         "link.go",
         "netlink.go",
+        "qdisc.go",
     ],
     importpath = "kubevirt.io/kubevirt/pkg/network/driver/netlink",
     visibility = ["//visibility:public"],
