@@ -92,6 +92,7 @@ const (
 
 type netconf interface {
 	Setup(vmi *v1.VirtualMachineInstance, networks []v1.Network, launcherPid int) error
+	SyncBandwidth(vmi *v1.VirtualMachineInstance, launcherPid int) error
 	Teardown(vmi *v1.VirtualMachineInstance) error
 }
 
@@ -310,6 +311,15 @@ func (c *BaseController) setupNetwork(vmi *v1.VirtualMachineInstance, networks [
 	}
 
 	return netConf.Setup(vmi, networks, isolationRes.Pid())
+}
+
+func (c *BaseController) syncNetworkBandwidth(vmi *v1.VirtualMachineInstance, netConf netconf) error {
+	isolationRes, err := c.podIsolationDetector.Detect(vmi)
+	if err != nil {
+		return fmt.Errorf(failedDetectIsolationFmt, err)
+	}
+
+	return netConf.SyncBandwidth(vmi, isolationRes.Pid())
 }
 
 func isMigrationInProgress(vmi *v1.VirtualMachineInstance, domain *api.Domain) bool {

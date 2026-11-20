@@ -1926,6 +1926,11 @@ func (c *VirtualMachineController) handleRunningVMI(vmi *v1.VirtualMachineInstan
 		*errorTolerantFeaturesError = append(*errorTolerantFeaturesError, err)
 	}
 
+	if err := c.syncNetworkBandwidth(vmi, c.netConf); err != nil {
+		c.recorder.Event(vmi, k8sv1.EventTypeWarning, "NetworkBandwidth", err.Error())
+		*errorTolerantFeaturesError = append(*errorTolerantFeaturesError, err)
+	}
+
 	return nil
 }
 

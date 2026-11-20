@@ -81,6 +81,27 @@ func NewNetConfWithCustomFactoryAndConfigState(nsFactory nsFactory, cacheCreator
 
 // Setup applies (privilege) network related changes for an existing virt-launcher pod.
 func (c *NetConf) Setup(vmi *v1.VirtualMachineInstance, networks []v1.Network, launcherPid int) error {
+	netpod := c.newNetPod(vmi, networks, launcherPid)
+
+	if err := netpod.Setup(); err != nil {
+		return fmt.Errorf("setup failed, err: %w", err)
+	}
+	return nil
+}
+
+// SyncBandwidth reconciles the interface QoS settings of a running VMI.
+// It is applied by virt-handler because a non-root virt-launcher runs libvirt in
+// session mode, where bandwidth tuning is not available.
+func (c *NetConf) SyncBandwidth(vmi *v1.VirtualMachineInstance, launcherPid int) error {
+	netpod := c.newNetPod(vmi, vmi.Spec.Networks, launcherPid)
+
+	if err := netpod.SyncBandwidth(); err != nil {
+		return fmt.Errorf("bandwidth sync failed, err: %w", err)
+	}
+	return nil
+}
+
+func (c *NetConf) newNetPod(vmi *v1.VirtualMachineInstance, networks []v1.Network, launcherPid int) netpod.NetPod {
 	c.configStateMutex.RLock()
 	state, ok := c.state[string(vmi.UID)]
 	c.configStateMutex.RUnlock()
@@ -98,7 +119,7 @@ func (c *NetConf) Setup(vmi *v1.VirtualMachineInstance, networks []v1.Network, l
 		ownerID = util.NonRootUID
 	}
 	queuesCapacity := int(converternet.NetworkQueuesCapacity(vmi))
-	netpod := netpod.NewNetPod(
+	return netpod.NewNetPod(
 		networks,
 		vmispec.FilterInterfacesByNetworks(vmi.Spec.Domain.Devices.Interfaces, networks),
 		string(vmi.UID),
@@ -112,11 +133,6 @@ func (c *NetConf) Setup(vmi *v1.VirtualMachineInstance, networks []v1.Network, l
 		netpod.WithLogger(log.Log.Object(vmi)),
 		netpod.WithVMIIfaceStatuses(vmi.Status.Interfaces),
 	)
-
-	if err := netpod.Setup(); err != nil {
-		return fmt.Errorf("setup failed, err: %w", err)
-	}
-	return nil
 }
 
 func (c *NetConf) Teardown(vmi *v1.VirtualMachineInstance) error {

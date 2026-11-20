@@ -30,6 +30,7 @@ import (
 	"kubevirt.io/kubevirt/pkg/pointer"
 
 	"kubevirt.io/kubevirt/pkg/network/cache"
+	netlinkdriver "kubevirt.io/kubevirt/pkg/network/driver/netlink"
 	"kubevirt.io/kubevirt/pkg/network/driver/nmstate"
 	"kubevirt.io/kubevirt/pkg/network/driver/procsys"
 	neterrors "kubevirt.io/kubevirt/pkg/network/errors"
@@ -74,6 +75,7 @@ type NetPod struct {
 
 	nmstateAdapter    nmstateAdapter
 	masqueradeAdapter masqueradeAdapter
+	tcAdapter         tcAdapter
 
 	cacheCreator cacheCreator
 	state        *State
@@ -96,6 +98,7 @@ func NewNetPod(vmiNetworks []v1.Network, vmiIfaces []v1.Interface, vmiUID string
 
 		nmstateAdapter:    nmstate.New(),
 		masqueradeAdapter: masquerade.New(),
+		tcAdapter:         netlinkdriver.NetLink{},
 
 		cacheCreator:         cache.CacheCreator{},
 		bindingPluginsByName: map[string]v1.InterfaceBindingPlugin{},
@@ -120,6 +123,12 @@ func WithNMStateAdapter(h nmstateAdapter) option {
 func WithMasqueradeAdapter(h masqueradeAdapter) option {
 	return func(n *NetPod) {
 		n.masqueradeAdapter = h
+	}
+}
+
+func WithTCAdapter(h tcAdapter) option {
+	return func(n *NetPod) {
+		n.tcAdapter = h
 	}
 }
 
